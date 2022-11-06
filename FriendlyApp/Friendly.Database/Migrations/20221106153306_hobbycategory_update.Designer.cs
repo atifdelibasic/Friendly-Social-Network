@@ -4,6 +4,7 @@ using Friendly.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Friendly.Database.Migrations
 {
     [DbContext(typeof(FriendlyContext))]
-    partial class FriendlyContextModelSnapshot : ModelSnapshot
+    [Migration("20221106153306_hobbycategory_update")]
+    partial class hobbycategory_update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,25 +168,19 @@ namespace Friendly.Database.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Friendly.Database.UserHobby", b =>
+            modelBuilder.Entity("HobbyUser", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("HobbiesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("HobbyId")
+                    b.Property<int>("UsersId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
+                    b.HasKey("HobbiesId", "UsersId");
 
-                    b.Property<DateTime>("DateModified")
-                        .HasColumnType("datetime2");
+                    b.HasIndex("UsersId");
 
-                    b.HasKey("UserId", "HobbyId");
-
-                    b.HasIndex("HobbyId");
-
-                    b.ToTable("UserHobby");
+                    b.ToTable("HobbyUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -323,7 +319,7 @@ namespace Friendly.Database.Migrations
             modelBuilder.Entity("Friendly.Database.Hobby", b =>
                 {
                     b.HasOne("Friendly.Database.HobbyCategory", "HobbyCategory")
-                        .WithMany("Hobbies")
+                        .WithMany("User")
                         .HasForeignKey("HobbyCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -331,23 +327,19 @@ namespace Friendly.Database.Migrations
                     b.Navigation("HobbyCategory");
                 });
 
-            modelBuilder.Entity("Friendly.Database.UserHobby", b =>
+            modelBuilder.Entity("HobbyUser", b =>
                 {
-                    b.HasOne("Friendly.Database.Hobby", "Hobby")
-                        .WithMany("UserHobbies")
-                        .HasForeignKey("HobbyId")
+                    b.HasOne("Friendly.Database.Hobby", null)
+                        .WithMany()
+                        .HasForeignKey("HobbiesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Friendly.Database.User", "User")
-                        .WithMany("UserHobbies")
-                        .HasForeignKey("UserId")
+                    b.HasOne("Friendly.Database.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Hobby");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -401,19 +393,9 @@ namespace Friendly.Database.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Friendly.Database.Hobby", b =>
-                {
-                    b.Navigation("UserHobbies");
-                });
-
             modelBuilder.Entity("Friendly.Database.HobbyCategory", b =>
                 {
-                    b.Navigation("Hobbies");
-                });
-
-            modelBuilder.Entity("Friendly.Database.User", b =>
-                {
-                    b.Navigation("UserHobbies");
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

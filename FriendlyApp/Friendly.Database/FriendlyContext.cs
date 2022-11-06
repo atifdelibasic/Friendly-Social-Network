@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
+using System.Diagnostics;
 
 namespace Friendly.Database
 {
@@ -11,5 +11,15 @@ namespace Friendly.Database
         {
               
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserHobby>().HasKey(sc => new { sc.UserId, sc.HobbyId });
+            base.OnModelCreating(modelBuilder);
+        }
+
+        public DbSet<Hobby> Hobby { get; set; }
+        public DbSet<HobbyCategory> HobbyCategory { get; set; }
+        public DbSet<UserHobby> UserHobbies { get; set; }
+
     }
 }
