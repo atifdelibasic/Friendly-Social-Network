@@ -6,7 +6,8 @@ namespace Friendly.WebAPI.PasswordValidator
     public class CommonPasswordValidator<TUser> : IPasswordValidator<TUser>
         where TUser : class
     {
-        static HashSet<string> Passwords { get; } = PasswordLists.LoadPasswordList("Friendly.WebAPI.Files.common_passwords_filtered.txt");
+       // @"\Friendly.WebAPI\Files\common_passwords_filtered.txt"
+        static HashSet<string> Passwords { get; } = PasswordLists.LoadPasswordList(@"Files\common_passwords_filtered.txt");
 
         public Task<IdentityResult> ValidateAsync(UserManager<TUser> manager,
                                                     TUser user,
@@ -30,11 +31,12 @@ namespace Friendly.WebAPI.PasswordValidator
         public static HashSet<string> LoadPasswordList(string resourceName)
         {
             HashSet<string> hashset;
-
             var assembly = Assembly.GetEntryAssembly();
+
             using (var stream = assembly.GetManifestResourceStream(resourceName))
             {
-                using (var streamReader = new StreamReader(stream))
+
+                using (var streamReader = new StreamReader(resourceName))
                 {
                     hashset = new HashSet<string>(
                         GetLines(streamReader),

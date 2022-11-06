@@ -16,7 +16,7 @@ namespace Friendly.Database
         public DateTime DateCreated { get; set; } = DateTime.Now;
         public DateTime DateModified { get; set; }
         public DateTime BirthDate { get; set; }
-        public string ProfileImageUrl { get; set; }
-        public string About { get; set; }
+        public string? ProfileImageUrl { get; set; }
+        public string? About { get; set; }
     }
 }

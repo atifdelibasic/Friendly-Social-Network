@@ -1,5 +1,6 @@
 
 using Friendly.Database;
+using Friendly.Service;
 using Friendly.WebAPI.PasswordValidator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -34,12 +35,13 @@ builder.Services.AddAuthentication(auth =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
+
         ValidAudience = configuration["AuthSettings:ValidAudience"],
         ValidIssuer = configuration["AuthSettings:ValidIssuer"],
-        RequireExpirationTime = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["AuthSettings:Key"])),
+        RequireExpirationTime = true,
+        ValidateIssuer = true,
+        ValidateAudience = true,
         ValidateIssuerSigningKey = true
     };
 });
@@ -47,14 +49,21 @@ builder.Services.AddAuthentication(auth =>
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    // Default Password settings.
+    // Password settings
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequireUppercase = true;
     options.Password.RequiredLength = 6;
     options.Password.RequiredUniqueChars = 1;
+
+    // Email settings
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedEmail = true;
 });
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 var app = builder.Build();
 
@@ -66,6 +75,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseAuthorization();
 
