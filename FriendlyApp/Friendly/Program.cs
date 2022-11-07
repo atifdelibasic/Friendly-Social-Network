@@ -78,6 +78,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 
 var app = builder.Build();

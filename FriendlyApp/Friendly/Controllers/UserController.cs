@@ -9,16 +9,12 @@ namespace Friendly.WebAPI.Controllers
 {
     public class UserController : ControllerBase
     {
-        private UserManager<Database.User> _userManager;
         private IUserService _service;
-        private IEmailService _emailService;
         private IConfiguration _configuration;
 
-        public UserController(IUserService service, UserManager<Database.User> userManager, IEmailService emailService, IConfiguration configuration)
+        public UserController(IUserService service, IConfiguration configuration)
         {
-            _userManager = userManager;
             _service = service;
-            _emailService = emailService;
             _configuration = configuration;
         }
 

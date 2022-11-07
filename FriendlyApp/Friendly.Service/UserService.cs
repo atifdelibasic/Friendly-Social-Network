@@ -105,7 +105,6 @@ namespace Friendly.Service
                 {
                     Message = tokenAsString,
                     IsSuccess = true,
-                    ExpireDate = token.ValidTo
                 };
             }
 
