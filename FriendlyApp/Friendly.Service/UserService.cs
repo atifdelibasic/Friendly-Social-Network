@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -68,7 +69,7 @@ namespace Friendly.Service
         public async Task<Model.UserManagerResponse> LoginUserAsync(UserLoginRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
-
+        
             if (user is null)
             {
                 return new Model.UserManagerResponse
@@ -82,13 +83,20 @@ namespace Friendly.Service
 
             if (result)
             {
-                var claims = new[]
+                // Get user roles
+                var roles = await _userManager.GetRolesAsync(user);
+
+                List<Claim> claims = new List<Claim>();
+
+                claims.Add(new Claim("email", user.Email));
+                claims.Add(new Claim("userid", user.Id.ToString()));
+                claims.Add(new Claim("firstname", user.FirstName.ToString()));
+                claims.Add(new Claim("lastname", user.LastName.ToString()));
+
+                foreach (var role in roles)
                 {
-                    new Claim("email", user.Email),
-                    new Claim("userid", user.Id.ToString()),
-                    new Claim("firstname", user.FirstName.ToString()),
-                    new Claim("lastname", user.LastName.ToString())
-                };
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
 
