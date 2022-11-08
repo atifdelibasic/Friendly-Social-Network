@@ -1,4 +1,5 @@
 ﻿using Friendly.Model.Requests;
+using Friendly.Model.Requests.User;
 
 namespace Friendly.Service
 {
@@ -9,5 +10,6 @@ namespace Friendly.Service
         public Task<Model.UserManagerResponse> ConfirmEmailAsync(string userId, string token);
         public Task<Model.UserManagerResponse> ForgotPasswordAsync(string email);
         public Task<Model.UserManagerResponse> ResetpasswordAsync(ResetPasswordRequest model);
+        public Task<Model.UserManagerResponse> UpdateUser(UpdateUserRequest request);
     }
 }

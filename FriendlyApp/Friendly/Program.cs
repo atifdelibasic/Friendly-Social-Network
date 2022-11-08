@@ -1,8 +1,10 @@
 
+using AutoMapper;
 using Friendly.Database;
 using Friendly.Service;
 using Friendly.WebAPI.PasswordValidator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -80,6 +82,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

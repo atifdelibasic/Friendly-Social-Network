@@ -1,8 +1,8 @@
 ﻿using Friendly.Model.Requests;
+using Friendly.Model.Requests.User;
 using Friendly.Service;
 using Friendly.WebAPI.Utils;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Friendly.WebAPI.Controllers
@@ -103,5 +103,22 @@ namespace Friendly.WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var result = await _service.UpdateUser(request);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
     }
 }
