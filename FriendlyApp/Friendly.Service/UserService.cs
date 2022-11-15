@@ -30,11 +30,14 @@ namespace Friendly.Service
         public async Task<UserManagerResponse> RegisterUserAsync(UserRegisterRequest request)
         {
             var user = _mapper.Map<Database.User>(request);
+            user.UserName = user.Email;
 
             var result = await _userManager.CreateAsync(user, request.Password);
-
             if (result.Succeeded)
             {
+                var createdUser = _userManager.FindByEmailAsync(user.Email);
+                var role = _userManager.AddToRoleAsync(user, "User");
+
                 var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                 var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
@@ -64,7 +67,7 @@ namespace Friendly.Service
         public async Task<UserManagerResponse> LoginUserAsync(UserLoginRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
-        
+
             if (user is null)
             {
                 return new UserManagerResponse
@@ -219,11 +222,11 @@ namespace Friendly.Service
             };
         }
 
-        public async Task<UserManagerResponse> UpdateUser(UpdateUserRequest request)
+        public async Task<UserManagerResponse> UpdateUser(int id, UpdateUserRequest request)
         {
-            var user = _userManager.FindByIdAsync(request.Id.ToString());
+            var user = await _userManager.FindByIdAsync(id.ToString());
 
-            if(user is null)
+            if (user is null)
             {
                 return new UserManagerResponse
                 {
@@ -232,9 +235,13 @@ namespace Friendly.Service
                 };
             }
 
-            var dbUser = _mapper.Map<Database.User>(request);
 
-            var result = await _userManager.UpdateAsync(dbUser);
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.BirthDate = (DateTime)request.BirthDate;
+            user.DateModified = request.DateModified;
+
+            var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
                 return new UserManagerResponse

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Friendly.WebAPI.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class RoleController:ControllerBase
     {
         private IRoleService _roleService;
@@ -14,8 +16,8 @@ namespace Friendly.WebAPI.Controllers
             _roleService = roleService;
         }
 
-        [AllowAnonymous]
         [HttpPost("Create")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CreateRoleRequest request)
         {
             if(!ModelState.IsValid)
@@ -34,16 +36,16 @@ namespace Friendly.WebAPI.Controllers
             return Ok(result);
         }
 
-        [AllowAnonymous]
-        [HttpPost("Update")]
-        public async Task<IActionResult> Update([FromBody] UpdateRoleRequest request)
+        [HttpPut("Update/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateRoleRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var result = await _roleService.UpdateRole(request);
+            var result = await _roleService.UpdateRole(id, request);
 
             if (!result.IsSuccess)
             {

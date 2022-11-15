@@ -18,26 +18,13 @@ ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
 
-builder.Services.AddControllers();
 builder.Services.AddDbContext<FriendlyContext>(
            options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(
-    options =>
-    {
-        options.AddSecurityDefinition("authorization", new OpenApiSecurityScheme
-        {
-            Description = "Description",
-            In = ParameterLocation.Header,
-            Name = "Authorizaiton",
-            Type = SecuritySchemeType.ApiKey,
-        }); 
-        options.OperationFilter<SecurityRequirementsOperationFilter>();
-    });
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddIdentity<User, IdentityRole<int>>()
-               .AddRoles<IdentityRole<int>>()
+               //.AddRoles<IdentityRole<int>>()
                .AddEntityFrameworkStores<FriendlyContext>()
                .AddDefaultTokenProviders()
                .AddPasswordValidator<EmailPasswordValidator>()
@@ -47,21 +34,24 @@ builder.Services.AddAuthentication(auth =>
 {
     auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    auth.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-
-        ValidAudience = configuration["AuthSettings:ValidAudience"],
-        ValidIssuer = configuration["AuthSettings:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["AuthSettings:Key"])),
-        RequireExpirationTime = true,
+        ValidAudience = builder.Configuration["AuthSettings:ValidAudience"],
+        ValidIssuer = builder.Configuration["AuthSettings:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:Key"])),
+       // RequireExpirationTime = true,
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateIssuerSigningKey = true
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = false
     };
 });
 
+
+builder.Services.AddControllers();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -93,10 +83,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

@@ -27,6 +27,16 @@ namespace Friendly.Service
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
             };
 
+            var role = roleManager.FindByNameAsync(request.Name);
+            if (role is not null)
+            {
+                return new UserManagerResponse
+                {
+                    Message = "Role already exists.",
+                    IsSuccess = false
+                };
+            }
+
             IdentityResult result = await roleManager.CreateAsync(identityRole);
 
             if (!result.Succeeded)
@@ -45,9 +55,9 @@ namespace Friendly.Service
             };
         }
 
-        public async Task<UserManagerResponse> UpdateRole(UpdateRoleRequest request)
+        public async Task<UserManagerResponse> UpdateRole(int id, UpdateRoleRequest request)
         {
-            var role = await roleManager.FindByIdAsync(request.Id.ToString());
+            var role = await roleManager.FindByIdAsync(id.ToString());
 
             if (role is null)
             {

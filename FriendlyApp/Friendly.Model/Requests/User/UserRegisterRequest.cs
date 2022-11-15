@@ -4,12 +4,12 @@ namespace Friendly.Model.Requests
 {
     public class UserRegisterRequest
     {
-        [Required(AllowEmptyStrings = false)]
-        [StringLength(50, MinimumLength = 3)]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "First name is required.")]
+       // [StringLength(50, MinimumLength = 3)]
         public string FirstName { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
-        [StringLength(50, MinimumLength = 3)]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "First name is required.")]
+       // [StringLength(50, MinimumLength = 3)]
         public string LastName { get; set; }
 
         [Required]

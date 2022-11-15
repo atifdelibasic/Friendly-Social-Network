@@ -17,6 +17,10 @@ namespace Friendly.Model.Requests.User
 
         [Required]
         [DataType(DataType.Date)]
-        public DateTime BirthDate { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
+        public DateTime? BirthDate { get; set; }
+
+        public DateTime DateModified { get; set; } = DateTime.UtcNow;
+        
     }
 }

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Friendly.WebAPI.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class UserController : ControllerBase
     {
         private IUserService _service;
@@ -25,7 +27,7 @@ namespace Friendly.WebAPI.Controllers
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.GetErrMessage();
-                return BadRequest(errors);
+                return BadRequest(ModelState);
             }
 
             var result = await _service.RegisterUserAsync(request);
@@ -103,15 +105,16 @@ namespace Friendly.WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request)
+        [HttpPut("update/{id}")]
+        [Authorize(Roles ="Admin,User")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserRequest request)
         {
             if(!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
-            var result = await _service.UpdateUser(request);
+            var result = await _service.UpdateUser(id, request);
 
             if(!result.IsSuccess)
             {

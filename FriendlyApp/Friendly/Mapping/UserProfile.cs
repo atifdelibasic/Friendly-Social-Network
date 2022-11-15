@@ -9,7 +9,8 @@ namespace Friendly.WebAPI.Mapping
         public UserProfile()
         {
             CreateMap<Database.User, UpdateUserRequest>();
-            CreateMap<Database.User, UserRegisterRequest>();
+            CreateMap<UpdateUserRequest, Database.User>();
+            CreateMap<UserRegisterRequest, Database.User>();
         }
     }
 }
