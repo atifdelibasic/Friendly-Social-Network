@@ -123,5 +123,19 @@ namespace Friendly.WebAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var result = await _service.DeleteUser(id);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
     }
 }

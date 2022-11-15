@@ -10,6 +10,7 @@ namespace Friendly.Database
         public DateTime BirthDate { get; set; }
         public string? ProfileImageUrl { get; set; }
         public string? About { get; set; }
+        public DateTime? DeletedAt { get; set; }
 
         public IList<UserHobby> UserHobbies { get; set; }
     }

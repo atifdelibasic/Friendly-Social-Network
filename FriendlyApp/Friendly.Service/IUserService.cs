@@ -11,5 +11,6 @@ namespace Friendly.Service
         public Task<Model.UserManagerResponse> ForgotPasswordAsync(string email);
         public Task<Model.UserManagerResponse> ResetpasswordAsync(ResetPasswordRequest model);
         public Task<Model.UserManagerResponse> UpdateUser(int id, UpdateUserRequest request);
+        public Task<Model.UserManagerResponse> DeleteUser(int id);
     }
 }

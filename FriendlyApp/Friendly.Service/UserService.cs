@@ -257,5 +257,38 @@ namespace Friendly.Service
                 Message = "User updated."
             };
         }
+
+        public async Task<UserManagerResponse> DeleteUser(int id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+
+            if (user is null)
+            {
+                return new UserManagerResponse
+                {
+                    IsSuccess = true,
+                    Message = "User not found."
+                };
+            }
+
+            // Soft deleting user
+            user.DeletedAt = DateTime.UtcNow;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return new UserManagerResponse
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong"
+                };
+            }
+
+            return new UserManagerResponse
+            {
+                IsSuccess = true,
+                Message = "User deleted."
+            };
+        }
     }
 }
