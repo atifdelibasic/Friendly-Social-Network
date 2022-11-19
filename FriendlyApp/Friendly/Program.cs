@@ -69,9 +69,12 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.SignIn.RequireConfirmedEmail = true;
 });
 
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddTransient<IHobbyService, HobbyService>();
+builder.Services.AddTransient<IHobbyCategoryService, HobbyCategoryService>();
+
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
