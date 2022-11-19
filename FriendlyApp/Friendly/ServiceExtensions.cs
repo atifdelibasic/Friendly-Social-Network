@@ -13,15 +13,12 @@ namespace Friendly.WebAPI
     {
         public static void ConfigureAspNetIdentity(this IServiceCollection services)
         {
-            services.AddIdentity<User, IdentityRole<int>>()
-               //.AddRoles<IdentityRole<int>>()
-               .AddEntityFrameworkStores<FriendlyContext>()
-               .AddDefaultTokenProviders()
-               .AddPasswordValidator<EmailPasswordValidator>()
-               .AddPasswordValidator<CommonPasswordValidator<User>>();
-
             services.Configure<IdentityOptions>(options =>
             {
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+                options.Lockout.MaxFailedAccessAttempts = 3;
+
                 // Password settings
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
@@ -35,6 +32,15 @@ namespace Friendly.WebAPI
                 options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedEmail = true;
             });
+
+            services.AddIdentity<User, IdentityRole<int>>()
+               .AddDefaultTokenProviders()
+               .AddRoles<IdentityRole<int>>()
+               .AddEntityFrameworkStores<FriendlyContext>()
+               .AddPasswordValidator<EmailPasswordValidator>()
+               .AddPasswordValidator<CommonPasswordValidator<User>>();
+
+           
         }
 
         public static void ConfigureAuthentication(this IServiceCollection services, ConfigurationManager configuration)

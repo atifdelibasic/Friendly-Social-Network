@@ -63,7 +63,6 @@ namespace Friendly.Service
             };
         }
 
-
         public async Task<UserManagerResponse> LoginUserAsync(UserLoginRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
@@ -77,47 +76,68 @@ namespace Friendly.Service
                 };
             }
 
-            var result = await _userManager.CheckPasswordAsync(user, request.Password);
-
-            if (result)
+            if (!await _userManager.IsEmailConfirmedAsync(user))
             {
-                // Get user roles
-                var roles = await _userManager.GetRolesAsync(user);
-
-                List<Claim> claims = new List<Claim>();
-
-                claims.Add(new Claim("email", user.Email));
-                claims.Add(new Claim("userid", user.Id.ToString()));
-                claims.Add(new Claim("firstname", user.FirstName.ToString()));
-                claims.Add(new Claim("lastname", user.LastName.ToString()));
-
-                foreach (var role in roles)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, role));
-                }
-
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
-
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["AuthSettings:ValidIssuer"],
-                    audience: _configuration["AuthSettings:ValidAudience"],
-                    claims: claims,
-                    expires: DateTime.Now.AddDays(5),
-                    signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
-
-                string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
-
                 return new UserManagerResponse
                 {
-                    Message = tokenAsString,
-                    IsSuccess = true,
+                    Message = "Email is not confirmed",
+                    IsSuccess = false
                 };
             }
 
+
+            if (!await _userManager.CheckPasswordAsync(user, request.Password))
+            {
+                await _userManager.AccessFailedAsync(user);
+
+                if (await _userManager.IsLockedOutAsync(user))
+                {
+
+                    return new UserManagerResponse
+                    {
+                        Message = "The account is locked out",
+                        IsSuccess = false
+                    };
+                }
+                return new UserManagerResponse
+                {
+                    Message = "Invalid login credentials.",
+                    IsSuccess = false
+                };
+            }
+
+
+            // Get user roles
+            var roles = await _userManager.GetRolesAsync(user);
+
+            List<Claim> claims = new List<Claim>();
+
+            claims.Add(new Claim("email", user.Email));
+            claims.Add(new Claim("userid", user.Id.ToString()));
+            claims.Add(new Claim("firstname", user.FirstName.ToString()));
+            claims.Add(new Claim("lastname", user.LastName.ToString()));
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["AuthSettings:ValidIssuer"],
+                audience: _configuration["AuthSettings:ValidAudience"],
+                claims: claims,
+                expires: DateTime.Now.AddDays(5),
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+
+            string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
+
+
             return new UserManagerResponse
             {
-                Message = "Invalid login credentials.",
-                IsSuccess = false
+                Message = tokenAsString,
+                IsSuccess = true,
             };
         }
 
