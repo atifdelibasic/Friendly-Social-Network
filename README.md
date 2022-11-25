@@ -1,1 +1,1 @@
-# Firendyl-Social-Network
+# Friendly-Social-Network
