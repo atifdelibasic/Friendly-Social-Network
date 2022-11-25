@@ -1,5 +1,6 @@
 using Friendly.Database;
 using Friendly.WebAPI;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,9 @@ builder.Services.ConfigureAuthentication(configuration);
 builder.Services.ConfigureServices();
 
 builder.Services.AddAutoMapper(typeof(Program));
+
+builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration["ConnectionStrings:DefaultConnection"]));
+builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 

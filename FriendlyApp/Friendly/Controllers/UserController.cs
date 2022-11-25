@@ -1,6 +1,7 @@
 ﻿using Friendly.Model.Requests;
 using Friendly.Model.Requests.User;
 using Friendly.Service;
+using Friendly.WebAPI.ActionFilters;
 using Friendly.WebAPI.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,13 +23,9 @@ namespace Friendly.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("Register")]
+        [ServiceFilter(typeof(DataValidationFilter))]
         public async Task<IActionResult> Register([FromBody] UserRegisterRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.GetErrMessage();
-                return BadRequest(ModelState);
-            }
 
             var result = await _service.RegisterUserAsync(request);
             if (!result.IsSuccess)
@@ -41,12 +38,6 @@ namespace Friendly.WebAPI.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
         {
-            Console.Write("dosao u login metodu");
-            if (!ModelState.IsValid)
-            {
-               var errors = ModelState.GetErrMessage();
-                return BadRequest(errors);
-            }
 
             var result = await _service.LoginUserAsync(request);
             if (!result.IsSuccess)
@@ -92,11 +83,6 @@ namespace Friendly.WebAPI.Controllers
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordRequest model)
         {
-            if (!ModelState.IsValid)
-            {
-               // var err = ModelState.GetErrMessage();
-                return BadRequest();
-            }
 
             var result = await _service.ResetpasswordAsync(model);
             if (result.IsSuccess)
@@ -109,10 +95,6 @@ namespace Friendly.WebAPI.Controllers
         [Authorize(Roles ="Admin,User")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserRequest request)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             var result = await _service.UpdateUser(id, request);
 

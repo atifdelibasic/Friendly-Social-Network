@@ -4,7 +4,7 @@ namespace Friendly.Model.Requests
 {
     public class UserRegisterRequest
     {
-        [Required(AllowEmptyStrings = false, ErrorMessage = "First name is required.")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "First name is requireeed.")]
        // [StringLength(50, MinimumLength = 3)]
         public string FirstName { get; set; }
 

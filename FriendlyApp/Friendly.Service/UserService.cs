@@ -2,6 +2,7 @@
 using Friendly.Model;
 using Friendly.Model.Requests;
 using Friendly.Model.Requests.User;
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
@@ -46,7 +47,7 @@ namespace Friendly.Service
                 string url = $"{_configuration["AppUrl"]}/confirmemail?userId={user.Id}&token={validEmailToken}";
 
                 // Send an Email confirmation 
-                await _emailService.SendEmailAsync(user.Email, "Confirm your Email", $"<a href='{url}'>Click here to confirm your Email.</a>");
+                var jobId = BackgroundJob.Enqueue( () => _emailService.SendEmailAsync(user.Email, "Confirm your Email", $"<a href='{url}'>Click here to confirm your Email.</a>"));
 
                 return new UserManagerResponse
                 {
