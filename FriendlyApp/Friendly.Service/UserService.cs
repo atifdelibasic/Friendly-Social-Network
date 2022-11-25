@@ -44,10 +44,10 @@ namespace Friendly.Service
                 var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
                 var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-                string url = $"{_configuration["AppUrl"]}/confirmemail?userId={user.Id}&token={validEmailToken}";
+                string url = $"{_configuration["AppUrl"]}/user/confirmemail?userId={user.Id}&token={validEmailToken}";
 
                 // Send an Email confirmation 
-                var jobId = BackgroundJob.Enqueue( () => _emailService.SendEmailAsync(user.Email, "Confirm your Email", $"<a href='{url}'>Click here to confirm your Email.</a>"));
+                var jobId = BackgroundJob.Enqueue(() =>  _emailService.SendEmailAsync(user.Email, "Confirm your Email", $"<a href='{url}'>Click here to confirm your Email.</a>"));
 
                 return new UserManagerResponse
                 {
@@ -202,7 +202,7 @@ namespace Friendly.Service
 
             string url = $"{_configuration["AppUrl"]}/ResetPassword?email={email}&token={validToken}";
 
-            await _emailService.SendEmailAsync(email, "Reset password", $"<div>To reset your password <a href='{url}'>Click here</a></div>");
+             _emailService.SendEmailAsync(email, "Reset password", $"<div>To reset your password <a href='{url}'>Click here</a></div>");
 
             return new UserManagerResponse
             {
