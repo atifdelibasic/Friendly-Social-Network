@@ -20,7 +20,6 @@ namespace Friendly.Service
             var to = new EmailAddress(toEmail);
             var msg = MailHelper.CreateSingleEmail(from, to, subject, content, content);
             var response = await client.SendEmailAsync(msg);
-            Console.WriteLine("Salje se email");
         }
     }
 }

@@ -23,7 +23,6 @@ namespace Friendly.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("Register")]
-        [ServiceFilter(typeof(DataValidationFilter))]
         public async Task<IActionResult> Register([FromBody] UserRegisterRequest request)
         {
 

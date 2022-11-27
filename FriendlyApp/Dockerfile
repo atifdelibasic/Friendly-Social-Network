@@ -10,16 +10,19 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Friendly/Friendly.csproj", "Friendly/"]
-RUN dotnet restore "Friendly/Friendly.csproj"
+COPY ["Friendly/Friendly.WebAPI.csproj", "Friendly.WebAPI/"]
+COPY ["Friendly.Service/Friendly.Service.csproj", "Friendly.Service/"]
+COPY ["Friendly.Model/Friendly.Model.csproj", "Friendly.Model/"]
+COPY ["Friendly.Database/Friendly.Database.csproj", "Friendly.Database/"]
+RUN dotnet restore "Friendly.WebAPI/Friendly.WebAPI.csproj"
 COPY . .
 WORKDIR "/src/Friendly"
-RUN dotnet build "Friendly.csproj" -c Release -o /app/build
+RUN dotnet build "Friendly.WebAPI.csproj" -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish "Friendly.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Friendly.WebAPI.csproj" -c Release -o /app
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Friendly.dll"]
+COPY --from=publish /app .
+ENTRYPOINT ["dotnet", "Friendly.WebAPI.dll"]
