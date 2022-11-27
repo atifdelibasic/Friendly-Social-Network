@@ -1,6 +1,5 @@
 ﻿using Friendly.Database;
 using Friendly.Service;
-using Friendly.WebAPI.ActionFilters;
 using Friendly.WebAPI.PasswordValidator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -75,8 +74,6 @@ namespace Friendly.WebAPI
             service.AddTransient<IEmailService, EmailService>();
             service.AddTransient<IHobbyService, HobbyService>();
             service.AddTransient<IHobbyCategoryService, HobbyCategoryService>();
-
-            service.AddScoped<DataValidationFilter>();
         }
     }
 }

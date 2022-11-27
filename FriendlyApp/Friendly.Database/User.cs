@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Friendly.Database
 {
     public class User : IdentityUser<int>
@@ -13,5 +15,9 @@ namespace Friendly.Database
         public DateTime? DeletedAt { get; set; }
 
         public IList<UserHobby> UserHobbies { get; set; }
+
+        public virtual int? GenderId { get; set; }
+        public virtual Gender Gender { get; set; }
+
     }
 }

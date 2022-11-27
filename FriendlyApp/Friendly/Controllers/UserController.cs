@@ -1,8 +1,6 @@
 ﻿using Friendly.Model.Requests;
 using Friendly.Model.Requests.User;
 using Friendly.Service;
-using Friendly.WebAPI.ActionFilters;
-using Friendly.WebAPI.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

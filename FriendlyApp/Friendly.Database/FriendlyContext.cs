@@ -20,6 +20,7 @@ namespace Friendly.Database
         public DbSet<Hobby> Hobby { get; set; }
         public DbSet<HobbyCategory> HobbyCategory { get; set; }
         public DbSet<UserHobby> UserHobbies { get; set; }
+        public DbSet<Gender> Gender { get; set; }
 
     }
 }
