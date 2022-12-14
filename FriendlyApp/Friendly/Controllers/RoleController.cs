@@ -1,13 +1,14 @@
 ﻿using Friendly.Model.Requests.Role;
 using Friendly.Service;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Friendly.WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class RoleController:ControllerBase
+    public class RoleController : ControllerBase
     {
         private IRoleService _roleService;
 
@@ -20,14 +21,14 @@ namespace Friendly.WebAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CreateRoleRequest request)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
             var result = await _roleService.CreateRole(request);
 
-            if(!result.IsSuccess)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }

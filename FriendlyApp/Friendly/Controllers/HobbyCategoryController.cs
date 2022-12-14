@@ -6,9 +6,9 @@ namespace Friendly.WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class HobbyCategoryController:BaseCRUDController<Model.HobbyCategory, SearchHobbyCategoryRequest, CreateHobbyCategoryRequest, UpdateHobbyCategoryRequest>
+    public class HobbyCategoryController : BaseCRUDController<Model.HobbyCategory, SearchHobbyCategoryRequest, CreateHobbyCategoryRequest, UpdateHobbyCategoryRequest>
     {
-        public HobbyCategoryController(IHobbyCategoryService service):base(service)
+        public HobbyCategoryController(IHobbyCategoryService service) : base(service)
         {
 
         }

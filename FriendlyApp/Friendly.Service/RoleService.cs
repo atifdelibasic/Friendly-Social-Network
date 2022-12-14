@@ -7,6 +7,7 @@ namespace Friendly.Service
     public class RoleService : IRoleService
     {
         private readonly RoleManager<IdentityRole<int>> roleManager;
+
         public RoleService(RoleManager<IdentityRole<int>> roleManager)
         {
             this.roleManager = roleManager;
@@ -19,7 +20,6 @@ namespace Friendly.Service
 
         public async Task<UserManagerResponse> CreateRole(CreateRoleRequest request)
         {
-
             IdentityRole<int> identityRole = new IdentityRole<int>
             {
                 Name = request.Name,

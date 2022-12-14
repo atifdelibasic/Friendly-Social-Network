@@ -59,7 +59,7 @@ namespace Friendly.WebAPI.Controllers
                 return Redirect($"{_configuration["AppUrl"]}/confirmemail.html");
             }
 
-            return  NotFound();
+            return NotFound();
         }
 
         [AllowAnonymous]
@@ -89,13 +89,13 @@ namespace Friendly.WebAPI.Controllers
         }
 
         [HttpPut("update/{id}")]
-        [Authorize(Roles ="Admin,User")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserRequest request)
         {
 
             var result = await _service.UpdateUser(id, request);
 
-            if(!result.IsSuccess)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }
@@ -109,7 +109,7 @@ namespace Friendly.WebAPI.Controllers
         {
             var result = await _service.DeleteUser(id);
 
-            if(!result.IsSuccess)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }

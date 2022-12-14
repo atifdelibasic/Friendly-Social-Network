@@ -74,6 +74,7 @@ namespace Friendly.WebAPI
             service.AddTransient<IEmailService, EmailService>();
             service.AddTransient<IHobbyService, HobbyService>();
             service.AddTransient<IHobbyCategoryService, HobbyCategoryService>();
+            service.AddTransient<IPostService, PostService>();
         }
     }
 }

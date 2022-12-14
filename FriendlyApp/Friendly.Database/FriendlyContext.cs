@@ -21,6 +21,7 @@ namespace Friendly.Database
         public DbSet<HobbyCategory> HobbyCategory { get; set; }
         public DbSet<UserHobby> UserHobbies { get; set; }
         public DbSet<Gender> Gender { get; set; }
+        public DbSet<Post> Post { get; set; }
 
     }
 }
