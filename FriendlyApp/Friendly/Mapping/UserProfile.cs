@@ -10,6 +10,7 @@ namespace Friendly.WebAPI.Mapping
         {
             CreateMap<UpdateUserRequest, Database.User>();
             CreateMap<UserRegisterRequest, Database.User>();
+            CreateMap<Database.User, Model.User>();
         }
     }
 }

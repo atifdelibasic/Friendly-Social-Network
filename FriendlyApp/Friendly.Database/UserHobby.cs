@@ -1,6 +1,6 @@
 ﻿namespace Friendly.Database
 {
-    public class UserHobby:BaseEntity
+    public class UserHobby : BaseEntity
     {
         public int UserId { get; set; }
         public User User { get; set; }

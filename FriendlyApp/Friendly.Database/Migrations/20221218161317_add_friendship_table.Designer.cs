@@ -4,6 +4,7 @@ using Friendly.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Friendly.Database.Migrations
 {
     [DbContext(typeof(FriendlyContext))]
-    partial class FriendlyContextModelSnapshot : ModelSnapshot
+    [Migration("20221218161317_add_friendship_table")]
+    partial class add_friendship_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,9 +38,6 @@ namespace Friendly.Database.Migrations
                     b.Property<DateTime>("DateModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("FriendId")
                         .HasColumnType("int");
 
@@ -54,7 +53,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Friendship", (string)null);
+                    b.ToTable("Friendship");
                 });
 
             modelBuilder.Entity("Friendly.Database.Gender", b =>
@@ -76,7 +75,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Gender", (string)null);
+                    b.ToTable("Gender");
                 });
 
             modelBuilder.Entity("Friendly.Database.Hobby", b =>
@@ -108,7 +107,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("HobbyCategoryId");
 
-                    b.ToTable("Hobby", (string)null);
+                    b.ToTable("Hobby");
                 });
 
             modelBuilder.Entity("Friendly.Database.HobbyCategory", b =>
@@ -131,7 +130,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HobbyCategory", (string)null);
+                    b.ToTable("HobbyCategory");
                 });
 
             modelBuilder.Entity("Friendly.Database.Post", b =>
@@ -178,7 +177,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Post", (string)null);
+                    b.ToTable("Post");
                 });
 
             modelBuilder.Entity("Friendly.Database.User", b =>
@@ -296,7 +295,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("HobbyId");
 
-                    b.ToTable("UserHobbies", (string)null);
+                    b.ToTable("UserHobbies");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>

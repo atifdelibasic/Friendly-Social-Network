@@ -1,5 +1,6 @@
 using Friendly.Database;
 using Friendly.WebAPI;
+using Friendly.WebAPI.Filter;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -43,7 +44,11 @@ builder.Services.AddSwaggerGen(option =>
 
 builder.Services.ConfigureAspNetIdentity();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(x =>
+{
+    x.Filters.Add<ErrorFilter>();
+});
+
 builder.Services.ConfigureAuthentication(configuration);
 
 builder.Services.ConfigureServices();

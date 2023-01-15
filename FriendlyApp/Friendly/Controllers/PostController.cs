@@ -16,9 +16,9 @@ namespace Friendly.WebAPI.Controllers
 
         public override Model.Post Insert([FromBody] CreatePostRequest request)
         {
-            Console.WriteLine("proso");
             string userId = User.FindFirst("userid")?.Value;
             request.UserId = userId;
+
             return base.Insert(request);
         }
     }

@@ -14,6 +14,8 @@ namespace Friendly.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserHobby>().HasKey(sc => new { sc.UserId, sc.HobbyId });
+            modelBuilder.Entity<Database.Friendship>().HasQueryFilter(x => x.DeletedAt == null);
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -22,6 +24,7 @@ namespace Friendly.Database
         public DbSet<UserHobby> UserHobbies { get; set; }
         public DbSet<Gender> Gender { get; set; }
         public DbSet<Post> Post { get; set; }
+        public DbSet<Friendship> Friendship { get; set; }
 
     }
 }

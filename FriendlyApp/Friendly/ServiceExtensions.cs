@@ -62,19 +62,20 @@ namespace Friendly.WebAPI
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
-                    ValidateLifetime = false
+                    ValidateLifetime = true
                 };
             });
         }
 
-        public static void ConfigureServices(this IServiceCollection service)
+        public static void ConfigureServices(this IServiceCollection services)
         {
-            service.AddTransient<IRoleService, RoleService>();
-            service.AddTransient<IUserService, UserService>();
-            service.AddTransient<IEmailService, EmailService>();
-            service.AddTransient<IHobbyService, HobbyService>();
-            service.AddTransient<IHobbyCategoryService, HobbyCategoryService>();
-            service.AddTransient<IPostService, PostService>();
+            services.AddTransient<IRoleService, RoleService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IHobbyService, HobbyService>();
+            services.AddTransient<IHobbyCategoryService, HobbyCategoryService>();
+            services.AddTransient<IPostService, PostService>();
+            services.AddScoped<IFriendshipService, FriendshipService>();
         }
     }
 }
