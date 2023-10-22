@@ -1,7 +1,6 @@
 ﻿using Friendly.Model.Requests.Role;
 using Friendly.Service;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Friendly.WebAPI.Controllers

@@ -22,6 +22,5 @@ namespace Friendly.WebAPI.Controllers
         {
             return _service.Update(id, request);
         }
-
     }
 }

@@ -8,6 +8,7 @@ namespace Friendly.WebAPI.Mapping
         public CommentProfile()
         {
             CreateMap<CreateCommentRequest, Database.Comment>();
+            CreateMap<UpdateCommentRequest, Database.Comment>();
             CreateMap<Database.Comment, Model.Comment>();
         }
     }

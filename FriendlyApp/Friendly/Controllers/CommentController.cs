@@ -1,6 +1,5 @@
 ﻿using Friendly.Model;
 using Friendly.Model.Requests.Comment;
-using Friendly.Model.Requests.Hobby;
 using Friendly.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +10,12 @@ namespace Friendly.WebAPI.Controllers
     [Route("[controller]")]
     [Authorize]
 
-    public class CommentController : BaseCRUDController<Model.Comment, SearchCommentRequest, CreateCommentRequest, UpdateCommentRequest>
+    public class CommentController : BaseCRUDController<Comment, SearchCommentRequest, CreateCommentRequest, UpdateCommentRequest>
     {
+        private readonly ICommentService _service;
         public CommentController(ICommentService service):base(service)
         {
-           
+            _service = service;
         }
 
         public override Comment Insert([FromBody] CreateCommentRequest request)
@@ -29,6 +29,15 @@ namespace Friendly.WebAPI.Controllers
         public override async Task<IEnumerable<Comment>> Get([FromQuery]SearchCommentRequest search = null)
         {
             return await base.Get(search);
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> DeleteComment(int id)
+        {
+            var result = await _service.DeleteComment(id);
+
+            return Ok(result);
         }
     }
 }

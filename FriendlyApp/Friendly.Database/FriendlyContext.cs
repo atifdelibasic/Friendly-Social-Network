@@ -15,6 +15,7 @@ namespace Friendly.Database
             modelBuilder.Entity<UserHobby>().HasKey(sc => new { sc.UserId, sc.HobbyId });
             modelBuilder.Entity<Friendship>().HasQueryFilter(x => x.DeletedAt == null);
             modelBuilder.Entity<Post>().HasQueryFilter(x => x.DeletedAt == null);
+            modelBuilder.Entity<Comment>().HasQueryFilter(x => x.DeletedAt == null);
 
             base.OnModelCreating(modelBuilder);
         }

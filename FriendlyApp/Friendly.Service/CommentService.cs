@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Friendly.Model;
 using Friendly.Model.Requests.Comment;
+using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
+using SendGrid.Helpers.Errors.Model;
 using System.Collections.Generic;
 
 namespace Friendly.Service
@@ -18,9 +20,9 @@ namespace Friendly.Service
             var query = _context.Comment
                 .Where(x => x.PostId == search.PostId);
 
-            if (search.CommentId.HasValue)
+            if (search.Cursor.HasValue)
             {
-                query = query.Where(x => x.Id > search.CommentId);
+                query = query.Where(x => x.Id > search.Cursor);
             }
 
             query = query.OrderBy(x => x.Id).Take(search.Limit);
@@ -29,5 +31,22 @@ namespace Friendly.Service
 
             return _mapper.Map<List<Comment>>(comments);
         }
+
+        public  async Task<Comment> DeleteComment(int id)
+        {
+            Database.Comment comment = await _context.Comment.FirstOrDefaultAsync(x => x.Id == id);
+            if (comment == null)
+            {
+                throw new NotFoundException("Comment not found");
+            }
+
+            comment.DeletedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+
+            Model.Comment model = _mapper.Map<Model.Comment>(comment);
+
+            return model;
+        }
+
     }
 }

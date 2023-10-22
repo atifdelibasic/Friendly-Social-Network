@@ -23,10 +23,10 @@ namespace Friendly.Service
             return _mapper.Map<List<T>>(list);
         }
 
-        public virtual T GetById(int id)
+        public virtual async Task<T> GetById(int id)
         {
-            var set = _context.Set<TDb>();
-            var entity = set.Find(id);
+            var entity = await _context.Set<TDb>().FindAsync(id);
+
             return _mapper.Map<T>(entity);
         }
 

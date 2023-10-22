@@ -35,7 +35,7 @@ namespace Friendly.WebAPI.Filter
                 default:
                     context.ModelState.AddModelError("error", INTERNAL_SERVER_ERROR_MSG);
                     context.HttpContext.Response.StatusCode = INTERNAL_SERVER_ERROR_CODE;
-                    // Log the exception
+                    // Log the exception 
                     // ex.LogError();
                     break;
             }
