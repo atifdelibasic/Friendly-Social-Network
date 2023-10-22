@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Friendly.Database
 {
-    public class Friendship : BaseEntity
+    public class Friendship : SoftDelete
     {
         [Key]
         public int Id { get; set; }
@@ -17,7 +17,6 @@ namespace Friendly.Database
         public User Friend { get; set; }
 
         public FriendshipStatus Status { get; set; }
-        public DateTime? DeletedAt { get; set; }
     }
 
 

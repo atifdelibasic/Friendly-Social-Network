@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace Friendly.Database
 {
@@ -14,7 +13,8 @@ namespace Friendly.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserHobby>().HasKey(sc => new { sc.UserId, sc.HobbyId });
-            modelBuilder.Entity<Database.Friendship>().HasQueryFilter(x => x.DeletedAt == null);
+            modelBuilder.Entity<Friendship>().HasQueryFilter(x => x.DeletedAt == null);
+            modelBuilder.Entity<Post>().HasQueryFilter(x => x.DeletedAt == null);
 
             base.OnModelCreating(modelBuilder);
         }
@@ -25,6 +25,7 @@ namespace Friendly.Database
         public DbSet<Gender> Gender { get; set; }
         public DbSet<Post> Post { get; set; }
         public DbSet<Friendship> Friendship { get; set; }
-
+        public DbSet<Comment> Comment { get; set; }
+        public DbSet<Like> Like { get; set; }
     }
 }

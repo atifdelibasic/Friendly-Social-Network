@@ -69,6 +69,9 @@ namespace Friendly.WebAPI
 
         public static void ConfigureServices(this IServiceCollection services)
         {
+            services.AddSingleton<ILoggerFactory, LoggerFactory>();
+            services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+
             services.AddTransient<IRoleService, RoleService>();
             services.AddScoped<IUserService, UserService>();
             services.AddTransient<IEmailService, EmailService>();
@@ -76,6 +79,7 @@ namespace Friendly.WebAPI
             services.AddTransient<IHobbyCategoryService, HobbyCategoryService>();
             services.AddTransient<IPostService, PostService>();
             services.AddScoped<IFriendshipService, FriendshipService>();
+            services.AddScoped<ICommentService, CommentService>();
         }
     }
 }

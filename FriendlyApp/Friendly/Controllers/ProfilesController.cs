@@ -7,7 +7,7 @@ namespace Friendly.WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "User")]
+   // [Authorize(Roles = "User")]
     public class ProfilesController : ControllerBase
     {
         private readonly IFriendshipService _friendshipService;
@@ -27,8 +27,8 @@ namespace Friendly.WebAPI.Controllers
             return Ok(friendship);
         }
 
-        [HttpGet("friend-requests")]
         [JwtFilter]
+        [HttpGet("friend-requests")]
         public async Task<IActionResult> GetFriendRequests()
         {
             int userId = Convert.ToInt32(HttpContext.Items["UserId"]);
@@ -38,6 +38,7 @@ namespace Friendly.WebAPI.Controllers
             return Ok(friendRequests);
         }
 
+        [JwtFilter]
         [HttpPost("{id}/friend-requests")]
         public async Task<IActionResult> SendFriendRequest(int id)
         {

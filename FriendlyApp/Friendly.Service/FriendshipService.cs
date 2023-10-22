@@ -70,7 +70,6 @@ namespace Friendly.Service
 
         public async Task<Model.Friendship> GetFriendshipById(int requestId)
         {
-
             Database.Friendship friendRequest = await DbGetFriendshipById(requestId);
 
             return _mapper.Map<Model.Friendship>(friendRequest);

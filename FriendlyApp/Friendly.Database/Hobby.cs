@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Friendly.Database
 {
@@ -12,10 +6,13 @@ namespace Friendly.Database
     {
         [Key]
         public int Id { get; set; }
-        [Required]
+
+        [Required(AllowEmptyStrings = false)]
         public string Title { get; set; }
-        [Required]
+
+        [Required(AllowEmptyStrings = false)]
         public string Description { get; set; }
+
         public virtual int HobbyCategoryId { get; set; }
         public virtual HobbyCategory HobbyCategory { get; set; }
 
