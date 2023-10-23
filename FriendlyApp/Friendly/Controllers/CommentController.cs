@@ -18,12 +18,12 @@ namespace Friendly.WebAPI.Controllers
             _service = service;
         }
 
-        public override Comment Insert([FromBody] CreateCommentRequest request)
+        public override async Task<Comment> Insert([FromBody] CreateCommentRequest request)
         {
             var userId = Convert.ToInt32(User.FindFirst("userid").Value);
             request.UserId = userId;
 
-            return base.Insert(request);
+            return await base.Insert(request);
         }
 
         public override async Task<IEnumerable<Comment>> Get([FromQuery]SearchCommentRequest search = null)

@@ -11,7 +11,7 @@ namespace Friendly.Service
         {
         }
 
-        public override Model.Post Insert(CreatePostRequest request)
+        public override async Task<Model.Post> Insert(CreatePostRequest request)
         {
             if (!string.IsNullOrEmpty(request.ImagePath))
             {
@@ -25,7 +25,7 @@ namespace Friendly.Service
                 request.ImagePath = fileName;
             }
 
-            return base.Insert(request);
+            return await base.Insert(request);
         }
 
         public async Task<List<Model.Post>> GetFriendsPosts(int userId, int take, int? lastPostId)

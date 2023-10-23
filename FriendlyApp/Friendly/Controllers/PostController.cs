@@ -19,12 +19,12 @@ namespace Friendly.WebAPI.Controllers
         }
 
         [JwtFilter]
-        public override Model.Post Insert([FromBody] CreatePostRequest request)
+        public override async Task<Model.Post> Insert([FromBody] CreatePostRequest request)
         {
             int userId = Convert.ToInt32(HttpContext.Items["UserId"]);
             request.UserId = userId;
 
-            return base.Insert(request);
+            return await base.Insert(request);
         }
 
         [JwtFilter]

@@ -12,15 +12,15 @@ namespace Friendly.WebAPI.Controllers
         }
 
         [HttpPost]
-        public virtual T Insert([FromBody] TInsert request)
+        public virtual async Task<T> Insert([FromBody] TInsert request)
         {
-            return _service.Insert(request);
+            return await _service.Insert(request);
         }
 
         [HttpPut("{id}")]
-        public virtual T Update(int id, [FromBody] TUpdate request)
+        public virtual async Task<T> Update(int id, [FromBody] TUpdate request)
         {
-            return _service.Update(id, request);
+            return await _service.Update(id, request);
         }
     }
 }
