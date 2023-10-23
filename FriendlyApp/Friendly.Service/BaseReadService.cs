@@ -25,9 +25,15 @@ namespace Friendly.Service
 
         public virtual async Task<T> GetById(int id)
         {
-            var entity = await _context.Set<TDb>().FindAsync(id);
+            var entity = await getById(id);
 
             return _mapper.Map<T>(entity);
+        }
+
+        protected virtual async Task<TDb> getById(int id)
+        {
+            var entity = await _context.Set<TDb>().FindAsync(id);
+            return entity;
         }
 
 

@@ -1,7 +1,6 @@
 ﻿using Friendly.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SendGrid.Helpers.Errors.Model;
 
 namespace Friendly.WebAPI.Controllers
 {
@@ -27,10 +26,6 @@ namespace Friendly.WebAPI.Controllers
         {
             var entity = await _service.GetById(id);
 
-            if(entity == null)
-            {
-                throw new NotFoundException("Not found.");
-            }
             return entity;
         }
     }

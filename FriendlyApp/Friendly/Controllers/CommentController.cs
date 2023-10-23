@@ -32,7 +32,6 @@ namespace Friendly.WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> DeleteComment(int id)
         {
             var result = await _service.DeleteComment(id);

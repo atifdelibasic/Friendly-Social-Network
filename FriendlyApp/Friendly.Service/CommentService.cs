@@ -34,7 +34,7 @@ namespace Friendly.Service
 
         public  async Task<Comment> DeleteComment(int id)
         {
-            Database.Comment comment = await _context.Comment.FindAsync(id);
+            Database.Comment comment = await getById(id);
             if (comment == null)
             {
                 throw new NotFoundException("Comment not found");
