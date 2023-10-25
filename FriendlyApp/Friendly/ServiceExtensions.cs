@@ -80,6 +80,7 @@ namespace Friendly.WebAPI
             services.AddTransient<IPostService, PostService>();
             services.AddScoped<IFriendshipService, FriendshipService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<ILikeService, LikeService>();
         }
     }
 }

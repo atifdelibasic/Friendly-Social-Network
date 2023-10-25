@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Friendly.Model.Requests.Post;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Friendly.Service
 {
