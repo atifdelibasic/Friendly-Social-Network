@@ -8,6 +8,7 @@ namespace Friendly.WebAPI.Mapping
         public LikeProfile()
         {
             CreateMap<SearchLikesRequest, Database.Like>();
+            CreateMap<CreateLikeRequest, Database.Like>();
             CreateMap<Database.Like, Model.Like>();
         }
     }

@@ -1,5 +1,4 @@
-﻿using Friendly.Model.Requests.Comment;
-using Friendly.Model.Requests.Post;
+﻿using Friendly.Model.Requests.Post;
 using Friendly.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

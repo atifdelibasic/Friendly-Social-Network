@@ -1,11 +1,4 @@
-﻿using Friendly.Database;
-using Friendly.Model.Requests.Friendship;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Friendly.Service
 {
     public interface IFriendshipService

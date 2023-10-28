@@ -1,17 +1,7 @@
 ﻿using AutoMapper;
 using Friendly.Database;
-using Friendly.Model;
 using Friendly.Model.Requests.Like;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Friendly.Service
 {
@@ -37,13 +27,54 @@ namespace Friendly.Service
                 query = query.Where(x => x.Id > search.Cursor);
             }
 
-            query = query.OrderBy(x => x.Id).Take(search.Limit);
-
-            var likes = await query.ToListAsync();
+            var likes = await query.Include(x => x.User).OrderBy(x => x.Id).Take(search.Limit).ToListAsync();
 
             return _mapper.Map<List<Model.Like>>(likes);
         }
 
-       
+        public async Task<Model.Like> Like(CreateLikeRequest request)
+        {
+            var like = await getLike(request.PostId, request.UserId);
+
+            if(like != null)
+            {
+                await DeleteLike(like);
+                return _mapper.Map<Model.Like>(like);
+            }
+
+           return await CreateLike(request);
+        }
+
+        protected async Task<Database.Like> getLike(int postId, int userId)
+        {
+            var like = await _context.Like.Include(x => x.User).FirstOrDefaultAsync(x => x.PostId == postId && x.UserId == userId);
+
+            return _mapper.Map<Database.Like>(like);
+        }
+
+        public async Task<Model.Like> GetLike(int postId, int userId)
+        {
+            var like = await getLike(postId, userId);
+
+            return _mapper.Map<Model.Like>(like);
+        }
+
+        public async Task<Model.Like> CreateLike(CreateLikeRequest like)
+        {
+            var entity = _mapper.Map<Database.Like>(like);
+
+            _context.Like.Add(entity);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<Model.Like>(entity);
+        }
+
+        public async Task DeleteLike(Database.Like like)
+        {
+            _context.Like.Remove(like);
+            await _context.SaveChangesAsync();
+        }
+
+
     }
 }

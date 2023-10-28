@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System;
 using Friendly.WebAPI.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SendGrid.Helpers.Errors.Model;

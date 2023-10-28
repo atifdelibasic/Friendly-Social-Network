@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using Friendly.Model;
 using Friendly.Model.Requests.Comment;
-using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
 using SendGrid.Helpers.Errors.Model;
-using System.Collections.Generic;
 
 namespace Friendly.Service
 {

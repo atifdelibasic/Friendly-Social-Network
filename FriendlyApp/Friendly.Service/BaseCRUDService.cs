@@ -15,7 +15,7 @@ namespace Friendly.Service
             TDb entity = _mapper.Map<TDb>(request);
 
             set.Add(entity);
-           await  _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return _mapper.Map<T>(entity);
         }

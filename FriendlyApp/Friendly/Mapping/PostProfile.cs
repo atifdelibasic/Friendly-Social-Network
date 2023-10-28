@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Friendly.Model.Requests.HobbyCategory;
 using Friendly.Model.Requests.Post;
 
 namespace Friendly.WebAPI.Mapping

@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using System.Security.Claims;
 
 public class JwtFilterAttribute : ActionFilterAttribute
 {
-   
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         var token = context.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");

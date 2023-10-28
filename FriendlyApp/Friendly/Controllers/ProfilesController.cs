@@ -1,6 +1,4 @@
-﻿using Friendly.Model.Requests.Friendship;
-using Friendly.Service;
-using Microsoft.AspNetCore.Authorization;
+﻿using Friendly.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Friendly.WebAPI.Controllers

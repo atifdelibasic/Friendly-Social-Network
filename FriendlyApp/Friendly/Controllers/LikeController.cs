@@ -22,5 +22,16 @@ namespace Friendly.WebAPI.Controllers
 
             return Ok(likes);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Like(CreateLikeRequest request)
+        {
+            var userId = Convert.ToInt32(User.FindFirst("userid").Value);
+            request.UserId = userId;
+
+            Model.Like like = await _service.Like(request);
+
+            return Ok(like);
+        }
     }
 }
