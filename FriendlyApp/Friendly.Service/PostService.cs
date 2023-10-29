@@ -39,6 +39,15 @@ namespace Friendly.Service
                 .Where(p => friendsIds.Contains(p.UserId) || p.UserId == userId)
                 .Include(p => p.User)
                 .Include(p => p.Hobby)
+                .Select(p => new Model.Post
+                {
+                    Id = p.Id,
+                    Description = p.Description,
+                    ImagePath = p.ImagePath,
+                    LikeCount = p.Likes.Count,
+                    CommentCount = p.Comments.Count,
+                    Hobby = _mapper.Map<Model.Hobby>(p.Hobby),
+                })
                 .OrderByDescending(p => p.Id)
                 .Take(take)
                 .AsNoTracking();
@@ -48,16 +57,7 @@ namespace Friendly.Service
                 query = query.Where(p => p.Id > lastPostId.Value);
             }
 
-            var posts = await query.Select(p => new Model.Post
-            {
-                Id = p.Id,
-                Description = p.Description,
-                ImagePath = p.ImagePath,
-                LikeCount = p.Likes.Count, 
-                CommentCount = p.Comments.Count 
-            })
-                .Take(take)
-                .ToListAsync();
+            var posts = await query.ToListAsync();
 
             return _mapper.Map<List<Model.Post>>(posts);
         }
