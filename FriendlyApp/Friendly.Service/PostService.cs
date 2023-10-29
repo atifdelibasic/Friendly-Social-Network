@@ -47,6 +47,7 @@ namespace Friendly.Service
                     LikeCount = p.Likes.Count,
                     CommentCount = p.Comments.Count,
                     Hobby = _mapper.Map<Model.Hobby>(p.Hobby),
+                    User = _mapper.Map<Model.User>(p.User)
                 })
                 .OrderByDescending(p => p.Id)
                 .Take(take)
