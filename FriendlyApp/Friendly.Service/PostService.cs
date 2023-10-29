@@ -88,13 +88,5 @@ namespace Friendly.Service
 
             return _mapper.Map<List<Model.Post>>(nearbyPosts);
         }
-
-
-        public async Task<List<Model.Comment>> GetPostComments(int postId, int limit = 10, int? cursor = null)
-        {
-            var query = await _context.Comment.Where(x => x.PostId == postId).ToListAsync();
-
-            return _mapper.Map<List<Model.Comment>>(query);
-        }
     }
 }

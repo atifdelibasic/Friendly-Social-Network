@@ -8,7 +8,6 @@ namespace Friendly.WebAPI.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = "User")]
-    [AllowAnonymous]
     public class PostController : BaseCRUDController<Model.Post, object, CreatePostRequest, object>
     {
         private readonly IPostService _postService;
@@ -46,14 +45,6 @@ namespace Friendly.WebAPI.Controllers
             var posts = await _postService.GetNearbyPosts(userId, longitude, latitude,  radius,  skip,  take);
 
             return Ok(posts);
-        }
-
-        [HttpGet("comments")]
-        public async Task<IActionResult> GetPostComments(int limit, int cursor, int postId)
-        {
-            var comments = await _postService.GetPostComments(postId, limit, cursor);
-
-            return Ok(comments);
         }
     }
 }
