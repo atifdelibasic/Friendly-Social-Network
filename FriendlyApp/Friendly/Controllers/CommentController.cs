@@ -26,11 +26,6 @@ namespace Friendly.WebAPI.Controllers
             return await base.Insert(request);
         }
 
-        public override async Task<IEnumerable<Comment>> Get([FromQuery]SearchCommentRequest search = null)
-        {
-            return await base.Get(search);
-        }
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {
