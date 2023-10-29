@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using Friendly.Model;
 using Friendly.Model.Requests.Post;
 using Microsoft.EntityFrameworkCore;
 
 namespace Friendly.Service
 {
-    public class PostService : BaseCRUDService<Model.Post, Database.Post, object, CreatePostRequest, UpdatePostRequest>, IPostService
+    public class PostService : BaseCRUDService<Model.Post, Database.Post, SearchPostRequest, CreatePostRequest, UpdatePostRequest>, IPostService
     {
         public PostService(Database.FriendlyContext context, IMapper mapper) : base(context, mapper)
         {
@@ -27,16 +28,16 @@ namespace Friendly.Service
             return await base.Insert(request);
         }
 
-        public async Task<List<Model.Post>> GetFriendsPosts(int userId, int take, int? lastPostId)
+        public async Task<List<Model.Post>> GetFriendsPosts(SearchPostRequest request)
         {
 
             var friendsIds = _context.Friendship
-                .Where(f => (f.UserId == userId || f.FriendId == userId) && f.Status == Database.FriendshipStatus.Friends)
-                .Select(f => f.UserId == userId ? f.FriendId : f.UserId);
+                .Where(f => (f.UserId == request.UserId || f.FriendId == request.UserId) && f.Status == Database.FriendshipStatus.Friends)
+                .Select(f => f.UserId == request.UserId ? f.FriendId : f.UserId);
 
 
             var query = _context.Post
-                .Where(p => friendsIds.Contains(p.UserId) || p.UserId == userId)
+                .Where(p => friendsIds.Contains(p.UserId) || p.UserId == request.UserId)
                 .Include(p => p.User)
                 .Include(p => p.Hobby)
                 .Select(p => new Model.Post
@@ -50,12 +51,12 @@ namespace Friendly.Service
                     User = _mapper.Map<Model.User>(p.User)
                 })
                 .OrderByDescending(p => p.Id)
-                .Take(take)
+                .Take(request.Limit)
                 .AsNoTracking();
 
-            if (lastPostId.HasValue)
+            if (request.Cursor.HasValue)
             {
-                query = query.Where(p => p.Id > lastPostId.Value);
+                query = query.Where(p => p.Id > request.Cursor.Value);
             }
 
             var posts = await query.ToListAsync();
@@ -63,12 +64,12 @@ namespace Friendly.Service
             return _mapper.Map<List<Model.Post>>(posts);
         }
 
-        public async Task<List<Model.Post>> GetNearbyPosts(int userId, double longitude, double latitude, int radius, int skip = 0, int take = 10)
+        public async Task<List<Model.Post>> GetNearbyPosts(int userId, double longitude, double latitude, int radius, int take = 10, int ?cursor = null)
         {
 
             var point = new { lat = latitude, lon = longitude };
 
-            var nearbyPosts = await _context.Post
+            var query =  _context.Post
                 .Include(p => p.User)
                 .Include(p => p.Hobby)
                 .Where(p => p.Latitude != null && p.Longitude != null)
@@ -81,12 +82,17 @@ namespace Friendly.Service
                         Math.Sin(Math.PI * point.lat / 180)
                     ) <= radius)
                 )
-                .Where(p => p.DeletedAt == null)
-                .Skip(skip)
-                .Take(take)
-            .ToListAsync();
+                .Where(p => p.DeletedAt == null);
+               
 
-            return _mapper.Map<List<Model.Post>>(nearbyPosts);
+            if (cursor.HasValue)
+            {
+                query = query.Where(p => p.Id > cursor.Value);
+            }
+
+            var posts = query.Take(take).ToListAsync();
+
+            return _mapper.Map<List<Model.Post>>(posts);
         }
     }
 }

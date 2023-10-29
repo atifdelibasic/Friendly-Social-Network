@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Friendly.Model.Requests.Post
 {
     public class SearchPostRequest
     {
+        public int? Cursor { get; set; }
+        public int Limit { get; set; }
+        public int UserId { get; set; }
     }
 }
