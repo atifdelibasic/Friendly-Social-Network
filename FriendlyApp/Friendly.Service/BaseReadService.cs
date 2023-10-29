@@ -35,7 +35,5 @@ namespace Friendly.Service
             var entity = await _context.Set<TDb>().FindAsync(id);
             return entity;
         }
-
-
     }
 }

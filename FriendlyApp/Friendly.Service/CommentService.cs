@@ -13,6 +13,13 @@ namespace Friendly.Service
 
         }
 
+        public override async Task<Model.Comment> GetById(int id)
+        {
+            var entity = await _context.Comment.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
+
+            return _mapper.Map<Model.Comment>(entity);
+        }
+
         public override async Task<IEnumerable<Comment>> Get(SearchCommentRequest search)
         {
             var query = _context.Comment
