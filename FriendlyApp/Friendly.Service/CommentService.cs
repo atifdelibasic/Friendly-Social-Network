@@ -23,7 +23,10 @@ namespace Friendly.Service
                 query = query.Where(x => x.Id > search.Cursor);
             }
 
-            query = query.OrderBy(x => x.Id).Take(search.Limit);
+            query = query
+                .Include(x => x.User) 
+                .OrderBy(x => x.Id)
+                .Take(search.Limit);
 
             var comments = await query.ToListAsync();
 

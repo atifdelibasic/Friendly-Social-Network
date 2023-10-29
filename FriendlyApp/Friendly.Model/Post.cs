@@ -10,5 +10,7 @@ namespace Friendly.Model
         public DateTime DateCreated { get; set; }
         public Hobby Hobby { get; set; }
         public string ImagePath { get; set; }
+        public int LikeCount { get; set; }
+        public int CommentCount { get; set; }
     }
 }

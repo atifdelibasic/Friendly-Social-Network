@@ -48,7 +48,14 @@ namespace Friendly.Service
                 query = query.Where(p => p.Id > lastPostId.Value);
             }
 
-            var posts = await query
+            var posts = await query.Select(p => new Model.Post
+            {
+                Id = p.Id,
+                Description = p.Description,
+                ImagePath = p.ImagePath,
+                LikeCount = p.Likes.Count, 
+                CommentCount = p.Comments.Count 
+            })
                 .Take(take)
                 .ToListAsync();
 
