@@ -8,7 +8,7 @@ namespace Friendly.WebAPI.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = "User")]
-    public class PostController : BaseCRUDController<Model.Post, object, CreatePostRequest, object>
+    public class PostController : BaseCRUDController<Model.Post, object, CreatePostRequest, UpdatePostRequest>
     {
         private readonly IPostService _postService;
         public PostController(IPostService postService) : base(postService)

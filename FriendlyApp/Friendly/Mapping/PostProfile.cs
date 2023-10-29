@@ -8,6 +8,7 @@ namespace Friendly.WebAPI.Mapping
         public PostProfile()
         {
             CreateMap<CreatePostRequest, Database.Post>();
+            CreateMap<UpdatePostRequest, Database.Post>();
             CreateMap<Database.Post, Model.Post>();
 
         }

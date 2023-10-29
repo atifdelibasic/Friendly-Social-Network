@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Friendly.Service
 {
-    public class PostService : BaseCRUDService<Model.Post, Database.Post, object, CreatePostRequest, object>, IPostService
+    public class PostService : BaseCRUDService<Model.Post, Database.Post, object, CreatePostRequest, UpdatePostRequest>, IPostService
     {
         public PostService(Database.FriendlyContext context, IMapper mapper) : base(context, mapper)
         {
