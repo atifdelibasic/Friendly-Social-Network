@@ -16,7 +16,7 @@ namespace Friendly.WebAPI.Controllers
         }
 
         [HttpGet]
-        public virtual async Task<IEnumerable<T>> Get(TSearch search = null)
+        public virtual async Task<IEnumerable<T>> Get([FromQuery]TSearch search = null)
         {
             return await _service.Get(search);
         }
