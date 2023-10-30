@@ -17,7 +17,7 @@ namespace Friendly.WebAPI.Controllers
         }
 
         public override async Task<Model.Post> Insert([FromBody] CreatePostRequest request)
-        {
+        {   
             var userId = Convert.ToInt32(User.FindFirst("userid").Value);
 
             request.UserId = userId;
@@ -36,12 +36,12 @@ namespace Friendly.WebAPI.Controllers
             return Ok(posts);
         }
 
-        [HttpGet("nearby/{take}")]
-        public async Task<IActionResult> GetNearbyPosts(double longitude, double latitude, int radius, int take = 10, int? cursor = null)
+        [HttpGet("nearby")]
+        public async Task<IActionResult> GetNearbyPosts([FromQuery] SearchNearbyPostsRequest request)
         {
             var userId = Convert.ToInt32(User.FindFirst("userid").Value);
 
-            var posts = await _postService.GetNearbyPosts(userId, longitude, latitude, radius, take, cursor);
+            var posts = await _postService.GetNearbyPosts(request);
 
             return Ok(posts);
         }

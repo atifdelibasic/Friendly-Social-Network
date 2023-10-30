@@ -39,7 +39,8 @@ namespace Friendly.WebAPI
                .AddPasswordValidator<EmailPasswordValidator>()
                .AddPasswordValidator<CommonPasswordValidator<User>>();
 
-           
+            services.AddHttpContextAccessor();
+
         }
 
         public static void ConfigureAuthentication(this IServiceCollection services, ConfigurationManager configuration)

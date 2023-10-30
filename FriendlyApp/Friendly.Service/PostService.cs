@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Friendly.Model;
 using Friendly.Model.Requests.Post;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Friendly.Service
 {
@@ -13,6 +15,7 @@ namespace Friendly.Service
 
         public override async Task<Model.Post> Insert(CreatePostRequest request)
         {
+
             if (!string.IsNullOrEmpty(request.ImagePath))
             {
                 byte[] imageBytes = Convert.FromBase64String(request.ImagePath);
@@ -64,10 +67,10 @@ namespace Friendly.Service
             return _mapper.Map<List<Model.Post>>(posts);
         }
 
-        public async Task<List<Model.Post>> GetNearbyPosts(int userId, double longitude, double latitude, int radius, int take = 10, int ?cursor = null)
+        public async Task<List<Model.Post>> GetNearbyPosts(SearchNearbyPostsRequest request)
         {
 
-            var point = new { lat = latitude, lon = longitude };
+            var point = new { lat = request.Latitude, lon = request.Longitude };
 
             var query =  _context.Post
                 .Include(p => p.User)
@@ -80,17 +83,17 @@ namespace Friendly.Service
                         Math.Cos((double)(Math.PI * point.lon / 180 - Math.PI * p.Longitude / 180)) +
                         Math.Sin((double)(Math.PI * p.Latitude / 180)) *
                         Math.Sin(Math.PI * point.lat / 180)
-                    ) <= radius)
+                    ) <= 10)
                 )
                 .Where(p => p.DeletedAt == null);
                
 
-            if (cursor.HasValue)
+            if (request.Cursor.HasValue)
             {
-                query = query.Where(p => p.Id > cursor.Value);
+                query = query.Where(p => p.Id > request.Cursor.Value);
             }
 
-            var posts = query.Take(take).ToListAsync();
+            var posts = query.Take(request.Limit).ToListAsync();
 
             return _mapper.Map<List<Model.Post>>(posts);
         }
