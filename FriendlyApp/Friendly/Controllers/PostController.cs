@@ -39,7 +39,7 @@ namespace Friendly.WebAPI.Controllers
         [HttpGet("nearby")]
         public async Task<IActionResult> GetNearbyPosts([FromQuery] SearchNearbyPostsRequest request)
         {
-            var userId = Convert.ToInt32(User.FindFirst("userid").Value);
+            //var userId = Convert.ToInt32(User.FindFirst("userid").Value);
 
             var posts = await _postService.GetNearbyPosts(request);
 

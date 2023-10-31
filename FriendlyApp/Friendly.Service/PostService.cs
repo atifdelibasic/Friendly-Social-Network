@@ -93,7 +93,7 @@ namespace Friendly.Service
                 query = query.Where(p => p.Id > request.Cursor.Value);
             }
 
-            var posts = query.Take(request.Limit).ToListAsync();
+            var posts = await query.Take(request.Limit).ToListAsync();
 
             return _mapper.Map<List<Model.Post>>(posts);
         }
