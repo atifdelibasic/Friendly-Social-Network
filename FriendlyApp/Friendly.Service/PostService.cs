@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Friendly.Model;
 using Friendly.Model.Requests.Post;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Friendly.Service
 {

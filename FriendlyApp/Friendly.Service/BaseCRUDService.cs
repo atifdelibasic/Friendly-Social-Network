@@ -8,6 +8,18 @@ namespace Friendly.Service
         public BaseCRUDService(FriendlyContext context, IMapper mapper) : base(context, mapper)
         {
         }
+
+        protected virtual async Task<T> ExtendedInsert(TInsert request, TDb entity)
+        {
+            var set = _context.Set<TDb>();
+
+            _mapper.Map(request, entity);
+
+            set.Add(entity);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<T>(entity);
+        }
         public virtual async Task<T> Insert(TInsert request)
         {
             var set = _context.Set<TDb>();

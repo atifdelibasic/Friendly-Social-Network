@@ -20,7 +20,7 @@ namespace Friendly.WebAPI.Controllers
         {   
             var userId = Convert.ToInt32(User.FindFirst("userid").Value);
 
-            request.UserId = userId;
+            //request.UserId = userId;
 
             return await base.Insert(request);
         }

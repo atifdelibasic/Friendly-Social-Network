@@ -7,7 +7,7 @@ namespace Friendly.WebAPI.Mapping
     {
         public PostProfile()
         {
-            CreateMap<CreatePostRequest, Database.Post>();
+            CreateMap<CreatePostRequest, Database.Post>().ForMember(dest => dest.UserId, opt => opt.Ignore());
             CreateMap<UpdatePostRequest, Database.Post>();
             CreateMap<Database.Post, Model.Post>();
 
