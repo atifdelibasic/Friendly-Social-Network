@@ -20,6 +20,7 @@ namespace Friendly.Service
 
             return _mapper.Map<T>(entity);
         }
+
         public virtual async Task<T> Insert(TInsert request)
         {
             var set = _context.Set<TDb>();

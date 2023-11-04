@@ -1,18 +1,22 @@
 ﻿using AutoMapper;
-using Friendly.Model;
 using Friendly.Model.Requests.Post;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Friendly.Service
 {
     public class PostService : BaseCRUDService<Model.Post, Database.Post, SearchPostRequest, CreatePostRequest, UpdatePostRequest>, IPostService
     {
-        public PostService(Database.FriendlyContext context, IMapper mapper) : base(context, mapper)
+        private readonly HttpAccessorHelperService _httpAccessorHelper;
+        public PostService(Database.FriendlyContext context, IMapper mapper, HttpAccessorHelperService httpAccessorHelper) : base(context, mapper)
         {
+            _httpAccessorHelper = httpAccessorHelper;
         }
 
         public override async Task<Model.Post> Insert(CreatePostRequest request)
         {
+            int userId = _httpAccessorHelper.GetUserId();
 
             if (!string.IsNullOrEmpty(request.ImagePath))
             {
@@ -26,7 +30,9 @@ namespace Friendly.Service
                 request.ImagePath = fileName;
             }
 
-            return await base.Insert(request);
+            Database.Post entity = new Database.Post { UserId = userId };
+
+            return await ExtendedInsert(request, entity);
         }
 
         public async Task<List<Model.Post>> GetFriendsPosts(SearchPostRequest request)

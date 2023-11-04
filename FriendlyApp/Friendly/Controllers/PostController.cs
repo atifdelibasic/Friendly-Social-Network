@@ -16,15 +16,6 @@ namespace Friendly.WebAPI.Controllers
             _postService = postService;
         }
 
-        public override async Task<Model.Post> Insert([FromBody] CreatePostRequest request)
-        {   
-            var userId = Convert.ToInt32(User.FindFirst("userid").Value);
-
-            //request.UserId = userId;
-
-            return await base.Insert(request);
-        }
-
         [HttpGet("friends")]
         public async Task<IActionResult> GetFriendsPosts([FromQuery]SearchPostRequest request)
         {

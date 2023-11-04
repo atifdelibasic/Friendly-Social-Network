@@ -81,6 +81,7 @@ namespace Friendly.WebAPI
             services.AddScoped<IFriendshipService, FriendshipService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ILikeService, LikeService>();
+            services.AddScoped<HttpAccessorHelperService>();
         }
     }
 }
