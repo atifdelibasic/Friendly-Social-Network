@@ -12,6 +12,7 @@ namespace Friendly.Model.Requests.Comment
         [Range(1, 100, ErrorMessage = "Limit must be between 1 and 100")]
         public int Limit { get; set; }
 
-        public int? Cursor { get; set; } = null;
+        [DefaultValue(null)]
+        public int? Cursor { get; set; }
     }
 }

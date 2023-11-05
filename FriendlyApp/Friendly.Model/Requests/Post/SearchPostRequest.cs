@@ -5,6 +5,7 @@ namespace Friendly.Model.Requests.Post
 {
     public class SearchPostRequest
     {
+        [DefaultValue(null)]
         public int? Cursor { get; set; }
 
         [DefaultValue(15)]
