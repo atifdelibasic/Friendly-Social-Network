@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Friendly.Model.Requests.Post;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace Friendly.Service
 {
@@ -37,14 +35,15 @@ namespace Friendly.Service
 
         public async Task<List<Model.Post>> GetFriendsPosts(SearchPostRequest request)
         {
+            int userId = _httpAccessorHelper.GetUserId();
 
             var friendsIds = _context.Friendship
-                .Where(f => (f.UserId == request.UserId || f.FriendId == request.UserId) && f.Status == Database.FriendshipStatus.Friends)
-                .Select(f => f.UserId == request.UserId ? f.FriendId : f.UserId);
+                .Where(f => (f.UserId == userId || f.FriendId == userId) && f.Status == Database.FriendshipStatus.Friends)
+                .Select(f => f.UserId == userId ? f.FriendId : f.UserId);
 
 
             var query = _context.Post
-                .Where(p => friendsIds.Contains(p.UserId) || p.UserId == request.UserId)
+                .Where(p => friendsIds.Contains(p.UserId) || p.UserId == userId)
                 .Include(p => p.User)
                 .Include(p => p.Hobby)
                 .Select(p => new Model.Post

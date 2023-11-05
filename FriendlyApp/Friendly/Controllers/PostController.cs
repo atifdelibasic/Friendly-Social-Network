@@ -19,9 +19,6 @@ namespace Friendly.WebAPI.Controllers
         [HttpGet("friends")]
         public async Task<IActionResult> GetFriendsPosts([FromQuery]SearchPostRequest request)
         {
-            var userId = Convert.ToInt32(User.FindFirst("userid").Value);
-            request.UserId = userId;
-
             var posts = await _postService.GetFriendsPosts(request);
 
             return Ok(posts);
@@ -30,8 +27,6 @@ namespace Friendly.WebAPI.Controllers
         [HttpGet("nearby")]
         public async Task<IActionResult> GetNearbyPosts([FromQuery] SearchNearbyPostsRequest request)
         {
-            //var userId = Convert.ToInt32(User.FindFirst("userid").Value);
-
             var posts = await _postService.GetNearbyPosts(request);
 
             return Ok(posts);

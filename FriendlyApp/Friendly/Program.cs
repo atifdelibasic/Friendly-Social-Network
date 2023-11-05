@@ -26,6 +26,8 @@ builder.Services.AddSwaggerGen(option =>
         Scheme = "bearer",
     });
 
+    option.EnableAnnotations();
+
     option.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
