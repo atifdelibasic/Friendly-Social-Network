@@ -8,9 +8,10 @@ namespace Friendly.Service
 {
     public class CommentService: BaseCRUDService<Model.Comment, Database.Comment, SearchCommentRequest, CreateCommentRequest, UpdateCommentRequest>, ICommentService
     {
-        public CommentService(Database.FriendlyContext context, IMapper mapper) : base(context, mapper)
+        private readonly HttpAccessorHelperService _httpAccessorHelper;
+        public CommentService(Database.FriendlyContext context, IMapper mapper, HttpAccessorHelperService httpAccessorHelper) : base(context, mapper)
         {
-
+            _httpAccessorHelper = httpAccessorHelper;
         }
 
         public override async Task<Model.Comment> GetById(int id)
@@ -18,6 +19,14 @@ namespace Friendly.Service
             var entity = await _context.Comment.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
 
             return _mapper.Map<Model.Comment>(entity);
+        }
+
+        public override async Task<Model.Comment> Insert(CreateCommentRequest request)
+        {
+            int userId = _httpAccessorHelper.GetUserId();
+            Database.Comment entity = new Database.Comment { UserId = userId };
+
+            return await ExtendedInsert(request, entity);
         }
 
         public override async Task<IEnumerable<Comment>> Get(SearchCommentRequest search)

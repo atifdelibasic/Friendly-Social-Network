@@ -9,11 +9,13 @@ namespace Friendly.Service
     {
         private readonly IMapper _mapper;
         private readonly FriendlyContext _context;
+        private readonly HttpAccessorHelperService _httpAccessorHelper;
 
-        public LikeService(FriendlyContext context, IMapper mapper)
+        public LikeService(FriendlyContext context, IMapper mapper, HttpAccessorHelperService httpAccessorHelper)
         {
             _mapper = mapper;
             _context = context;
+            _httpAccessorHelper = httpAccessorHelper;
         }
 
         public async Task<List<Model.Like>> GetLikes(SearchLikesRequest search)
@@ -34,7 +36,9 @@ namespace Friendly.Service
 
         public async Task<Model.Like> Like(CreateLikeRequest request)
         {
-            var like = await getLike(request.PostId, request.UserId);
+            int userId = _httpAccessorHelper.GetUserId();
+
+            var like = await getLike(request.PostId, userId);
 
             if(like != null)
             {
@@ -42,7 +46,9 @@ namespace Friendly.Service
                 return _mapper.Map<Model.Like>(like);
             }
 
-           return await CreateLike(request);
+            Database.Like entity = new Database.Like { UserId = userId };
+
+           return await CreateLike(request, entity);
         }
 
         protected async Task<Database.Like> getLike(int postId, int userId)
@@ -59,9 +65,9 @@ namespace Friendly.Service
             return _mapper.Map<Model.Like>(like);
         }
 
-        public async Task<Model.Like> CreateLike(CreateLikeRequest like)
+        public async Task<Model.Like> CreateLike(CreateLikeRequest request, Database.Like entity)
         {
-            var entity = _mapper.Map<Database.Like>(like);
+            _mapper.Map(request, entity);
 
             _context.Like.Add(entity);
             await _context.SaveChangesAsync();

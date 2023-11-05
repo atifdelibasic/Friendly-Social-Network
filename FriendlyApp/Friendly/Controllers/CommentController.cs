@@ -18,14 +18,6 @@ namespace Friendly.WebAPI.Controllers
             _service = service;
         }
 
-        public override async Task<Comment> Insert([FromBody] CreateCommentRequest request)
-        {
-            var userId = Convert.ToInt32(User.FindFirst("userid").Value);
-            request.UserId = userId;
-
-            return await base.Insert(request);
-        }
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {
