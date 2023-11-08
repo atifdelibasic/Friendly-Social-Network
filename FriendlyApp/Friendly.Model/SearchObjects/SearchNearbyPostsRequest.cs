@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Friendly.Model.Requests.Post
+namespace Friendly.Model.SearchObjects
 {
     public class SearchNearbyPostsRequest
     {

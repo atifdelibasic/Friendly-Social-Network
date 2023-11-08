@@ -1,8 +1,11 @@
-﻿namespace Friendly.Service
+﻿using Friendly.Model;
+using Friendly.Model.SearchObjects;
+
+namespace Friendly.Service
 {
-    public interface IReadService<T, TSearch> where T : class where TSearch : class
+    public interface IReadService<T, TSearch> where T : class where TSearch : BaseOffsetSearchObject
     {
-        public Task<IEnumerable<T>> Get(TSearch search);
+        Task<PagedResult<T>> Get(TSearch search = null);
         public Task<T> GetById(int id);
     }
 }

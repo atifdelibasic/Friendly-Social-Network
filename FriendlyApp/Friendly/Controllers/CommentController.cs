@@ -1,5 +1,6 @@
 ﻿using Friendly.Model;
 using Friendly.Model.Requests.Comment;
+using Friendly.Model.SearchObjects;
 using Friendly.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,14 @@ namespace Friendly.WebAPI.Controllers
             var result = await _service.DeleteComment(id);
 
             return Ok(result);
+        }
+
+        [HttpGet("cursor")]
+        public async Task<IActionResult> GetCommentsCursor([FromQuery]SearchCommentCursorRequest request)
+        {
+            var comments = await _service.GetCommentsCursor(request);
+
+            return Ok(comments);
         }
     }
 }

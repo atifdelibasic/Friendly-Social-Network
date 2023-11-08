@@ -1,5 +1,6 @@
 ﻿using Friendly.Model;
 using Friendly.Model.Requests.Post;
+using Friendly.Model.SearchObjects;
 
 namespace Friendly.Service
 {

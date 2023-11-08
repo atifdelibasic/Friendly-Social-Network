@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
+﻿using Friendly.Model.SearchObjects;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Friendly.Model.Requests.Post
 {
-    public class SearchPostRequest
+    public class SearchPostRequest:BaseOffsetSearchObject
     {
         [DefaultValue(null)]
         public int? Cursor { get; set; }

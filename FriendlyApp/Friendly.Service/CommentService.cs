@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Friendly.Model;
 using Friendly.Model.Requests.Comment;
+using Friendly.Model.SearchObjects;
 using Microsoft.EntityFrameworkCore;
 using SendGrid.Helpers.Errors.Model;
 
@@ -29,7 +30,7 @@ namespace Friendly.Service
             return await ExtendedInsert(request, entity);
         }
 
-        public override async Task<IEnumerable<Comment>> Get(SearchCommentRequest search)
+        public  async Task<List<Model.Comment>> GetCommentsCursor(SearchCommentCursorRequest search)
         {
             var query = _context.Comment
                 .Where(x => x.PostId == search.PostId);
@@ -40,13 +41,26 @@ namespace Friendly.Service
             }
 
             query = query
-                .Include(x => x.User) 
+                .Include(x => x.User)
                 .OrderBy(x => x.Id)
                 .Take(search.Limit);
 
             var comments = await query.ToListAsync();
 
             return _mapper.Map<List<Comment>>(comments);
+        }
+        public override IQueryable<Database.Comment> AddFilter(IQueryable<Database.Comment> query, SearchCommentRequest? search = null)
+        {
+            query = query.Where(x => x.PostId == search.PostId).OrderBy(x => x.Id);
+
+            return base.AddFilter(query, search);
+        }
+
+        public override IQueryable<Database.Comment> AddInclude(IQueryable<Database.Comment> query, SearchCommentRequest? search = null)
+        {
+            query = query.Include(x => x.User);
+
+            return base.AddInclude(query, search);
         }
 
         public  async Task<Comment> DeleteComment(int id)

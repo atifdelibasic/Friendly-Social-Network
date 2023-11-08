@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Friendly.Model.Requests.Post;
+using Friendly.Model.SearchObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Friendly.Service

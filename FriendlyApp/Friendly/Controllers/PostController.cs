@@ -1,4 +1,5 @@
 ﻿using Friendly.Model.Requests.Post;
+using Friendly.Model.SearchObjects;
 using Friendly.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

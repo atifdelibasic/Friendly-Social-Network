@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Friendly.Database;
+using Friendly.Model.SearchObjects;
 
 namespace Friendly.Service
 {
-    public class BaseCRUDService<T, TDb, TSearch, TInsert, TUpdate> : BaseReadService<T, TDb, TSearch>, ICRUDService<T, TSearch, TInsert, TUpdate> where T : class where TSearch : class where TInsert : class where TUpdate : class where TDb : class
+    public class BaseCRUDService<T, TDb, TSearch, TInsert, TUpdate> : BaseReadService<T, TDb, TSearch>, ICRUDService<T, TSearch, TInsert, TUpdate> where T : class where TSearch : BaseOffsetSearchObject where TInsert : class where TUpdate : class where TDb : class
     {
         public BaseCRUDService(FriendlyContext context, IMapper mapper) : base(context, mapper)
         {

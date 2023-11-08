@@ -1,13 +1,14 @@
-﻿using Friendly.Service;
+﻿using Friendly.Model;
+using Friendly.Model.SearchObjects;
+using Friendly.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Friendly.WebAPI.Controllers
 {
-    [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "User")]
-    public class BaseReadController<T, TSearch> : ControllerBase where T : class where TSearch : class
+    [Authorize]
+    public class BaseReadController<T, TSearch> : ControllerBase where T : class where TSearch : BaseOffsetSearchObject
     {
         protected IReadService<T, TSearch> _service;
         public BaseReadController(IReadService<T, TSearch> service)
@@ -16,7 +17,7 @@ namespace Friendly.WebAPI.Controllers
         }
 
         [HttpGet]
-        public virtual async Task<IEnumerable<T>> Get([FromQuery]TSearch search = null)
+        public virtual async Task<PagedResult<T>> Get([FromQuery] TSearch? search = null)
         {
             return await _service.Get(search);
         }
@@ -24,9 +25,7 @@ namespace Friendly.WebAPI.Controllers
         [HttpGet("{id}")]
         public virtual async Task<T> GetById(int id)
         {
-            var entity = await _service.GetById(id);
-
-            return entity;
+            return await _service.GetById(id);
         }
     }
 }
