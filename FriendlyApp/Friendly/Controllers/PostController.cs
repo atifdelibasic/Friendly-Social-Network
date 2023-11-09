@@ -18,7 +18,7 @@ namespace Friendly.WebAPI.Controllers
         }
 
         [HttpGet("friends")]
-        public async Task<IActionResult> GetFriendsPosts([FromQuery]SearchPostRequest request)
+        public async Task<IActionResult> GetFriendsPosts([FromQuery]BaseCursorSearchObject request)
         {
             var posts = await _postService.GetFriendsPosts(request);
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Friendly.Database;
 using Friendly.Model.Requests.Post;
 using Friendly.Model.SearchObjects;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +35,7 @@ namespace Friendly.Service
             return await ExtendedInsert(request, entity);
         }
 
-        public async Task<List<Model.Post>> GetFriendsPosts(SearchPostRequest request)
+        public async Task<List<Model.Post>> GetFriendsPosts(BaseCursorSearchObject request)
         {
             int userId = _httpAccessorHelper.GetUserId();
 
@@ -100,6 +101,18 @@ namespace Friendly.Service
             var posts = await query.Take(request.Limit).ToListAsync();
 
             return _mapper.Map<List<Model.Post>>(posts);
+        }
+
+        public override IQueryable<Post> AddInclude(IQueryable<Post> query, SearchPostRequest search = null)
+        {
+            query = query.Where(x => x.UserId == search.UserId);
+            return base.AddInclude(query, search);
+        }
+
+        public override IQueryable<Post> AddFilter(IQueryable<Post> query, SearchPostRequest search = null)
+        {
+            query = query.Include(x => x.User).Include(x => x.Hobby);
+            return base.AddFilter(query, search);
         }
     }
 }
