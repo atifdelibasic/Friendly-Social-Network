@@ -74,12 +74,9 @@ namespace Friendly.Service
 
         public async Task<List<Model.Post>> GetNearbyPosts(SearchNearbyPostsRequest request)
         {
-
             var point = new { lat = request.Latitude, lon = request.Longitude };
 
-            var query =  _context.Post
-                .Include(p => p.User)
-                .Include(p => p.Hobby)
+            var query = _context.Post
                 .Where(p => p.Latitude != null && p.Longitude != null)
                 .Where(p => (
                      6371 * Math.Acos(
@@ -90,13 +87,26 @@ namespace Friendly.Service
                         Math.Sin(Math.PI * point.lat / 180)
                     ) <= 10)
                 )
-                .Where(p => p.DeletedAt == null);
-               
+                .Include(p => p.User)
+                .Include(p => p.Hobby)
+                .Select(p => new Model.Post
+                {
+                    Id = p.Id,
+                    Description = p.Description,
+                    ImagePath = p.ImagePath,
+                    LikeCount = p.Likes.Count,
+                    CommentCount = p.Comments.Count,
+                    Hobby = _mapper.Map<Model.Hobby>(p.Hobby),
+                    User = _mapper.Map<Model.User>(p.User)
+                })
+                .AsNoTracking();
 
             if (request.Cursor.HasValue)
             {
                 query = query.Where(p => p.Id > request.Cursor.Value);
             }
+
+            query = query.OrderBy(p => p.Id);
 
             var posts = await query.Take(request.Limit).ToListAsync();
 
