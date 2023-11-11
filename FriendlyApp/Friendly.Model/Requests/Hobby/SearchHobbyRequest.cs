@@ -1,9 +1,8 @@
-﻿
-using Friendly.Model.SearchObjects;
+﻿using Friendly.Model.SearchObjects;
 
 namespace Friendly.Model.Requests.Hobby
 {
-    public class SearchHobbyRequest:BaseOffsetSearchObject
+    public class SearchHobbyRequest : BaseOffsetSearchObject
     {
     }
 }
