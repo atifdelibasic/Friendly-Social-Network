@@ -23,6 +23,10 @@ namespace Friendly.Service
             var query = _context.Like
                 .Where(x => x.PostId == search.PostId);
 
+            if (!string.IsNullOrEmpty(search.Text))
+            {
+                query = query.Where(x => (x.User.FirstName + x.User.LastName).ToLower() == search.Text.ToLower());
+            }
 
             if (search.Cursor.HasValue)
             {

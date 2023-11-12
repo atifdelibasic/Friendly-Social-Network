@@ -1,17 +1,12 @@
-﻿using System.ComponentModel;
+﻿using Friendly.Model.SearchObjects;
 using System.ComponentModel.DataAnnotations;
 
 namespace Friendly.Model.Requests.Like
 {
-    public class SearchLikesRequest
+    public class SearchLikesRequest : BaseCursorSearchObject
     {
         [Required]
         public int PostId { get; set; }
-
-        [DefaultValue(50)]
-        [Range(1, 100, ErrorMessage = "Limit must be between 1 and 100")]
-        public int Limit { get; set; }
-
-        public int? Cursor { get; set; }
+        public string Text { get; set; }
     }
 }
