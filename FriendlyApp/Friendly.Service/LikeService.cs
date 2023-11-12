@@ -25,7 +25,7 @@ namespace Friendly.Service
 
             if (!string.IsNullOrEmpty(search.Text))
             {
-                query = query.Where(x => (x.User.FirstName + x.User.LastName).ToLower() == search.Text.ToLower());
+                query = query.Where(x => (x.User.FirstName + " " + x.User.LastName).ToLower().Contains(search.Text.ToLower()));
             }
 
             if (search.Cursor.HasValue)
@@ -44,7 +44,7 @@ namespace Friendly.Service
 
             var like = await getLike(request.PostId, userId);
 
-            if(like != null)
+            if (like != null)
             {
                 await DeleteLike(like);
                 return _mapper.Map<Model.Like>(like);
@@ -52,7 +52,7 @@ namespace Friendly.Service
 
             Database.Like entity = new Database.Like { UserId = userId };
 
-           return await CreateLike(request, entity);
+            return await CreateLike(request, entity);
         }
 
         protected async Task<Database.Like> getLike(int postId, int userId)
