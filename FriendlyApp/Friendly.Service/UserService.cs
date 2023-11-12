@@ -2,6 +2,7 @@
 using Friendly.Model;
 using Friendly.Model.Requests;
 using Friendly.Model.Requests.User;
+using Friendly.Model.SearchObjects;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
@@ -13,14 +14,14 @@ using System.Text;
 
 namespace Friendly.Service
 {
-    public class UserService : IUserService
+    public class UserService : BaseReadService<Model.User, Database.User, SearchUserRequest>, IUserService
     {
         private UserManager<Database.User> _userManager;
         private IConfiguration _configuration;
         private IEmailService _emailService;
         private readonly IMapper _mapper;
 
-        public UserService(UserManager<Database.User> userManager, IConfiguration configuration, IEmailService emailservice, IMapper mapper)
+        public UserService(Database.FriendlyContext context, UserManager<Database.User> userManager, IConfiguration configuration, IEmailService emailservice, IMapper mapper) : base(context, mapper)
         {
             _userManager = userManager;
             _configuration = configuration;
@@ -47,7 +48,7 @@ namespace Friendly.Service
                 string url = $"{_configuration["AppUrl"]}/user/confirmemail?userId={user.Id}&token={validEmailToken}";
 
                 // Send an Email confirmation 
-                var jobId = BackgroundJob.Enqueue(() =>  _emailService.SendEmailAsync(user.Email, "Confirm your Email", $"<a href='{url}'>Click here to confirm your Email.</a>"));
+                var jobId = BackgroundJob.Enqueue(() => _emailService.SendEmailAsync(user.Email, "Confirm your Email", $"<a href='{url}'>Click here to confirm your Email.</a>"));
 
                 return new UserManagerResponse
                 {
@@ -202,7 +203,7 @@ namespace Friendly.Service
 
             string url = $"{_configuration["AppUrl"]}/ResetPassword?email={email}&token={validToken}";
 
-             await _emailService.SendEmailAsync(email, "Reset password", $"<div>To reset your password <a href='{url}'>Click here</a></div>");
+            await _emailService.SendEmailAsync(email, "Reset password", $"<div>To reset your password <a href='{url}'>Click here</a></div>");
 
             return new UserManagerResponse
             {
@@ -310,6 +311,17 @@ namespace Friendly.Service
                 IsSuccess = true,
                 Message = "User deleted."
             };
+        }
+
+        public override IQueryable<Database.User> AddFilter(IQueryable<Database.User> query, SearchUserRequest search = null)
+        {
+            if (!string.IsNullOrEmpty(search.Text))
+            {
+                string searchTextLower = search.Text.ToLower();
+                query = query.Where(x => (x.FirstName + " " + x.LastName).ToLower().Contains(search.Text));
+            }
+
+            return base.AddFilter(query, search);
         }
     }
 }

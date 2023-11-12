@@ -1,5 +1,6 @@
 ﻿using Friendly.Model.Requests;
 using Friendly.Model.Requests.User;
+using Friendly.Model.SearchObjects;
 using Friendly.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,14 +9,14 @@ namespace Friendly.WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    public class UserController : BaseReadController<Model.User, SearchUserRequest>
     {
-        private IUserService _service;
+        private IUserService _userService;
         private IConfiguration _configuration;
 
-        public UserController(IUserService service, IConfiguration configuration)
+        public UserController(IUserService userService, IConfiguration configuration) : base(userService)
         {
-            _service = service;
+            _userService = userService;
             _configuration = configuration;
         }
 
@@ -24,7 +25,7 @@ namespace Friendly.WebAPI.Controllers
         public async Task<IActionResult> Register([FromBody] UserRegisterRequest request)
         {
 
-            var result = await _service.RegisterUserAsync(request);
+            var result = await _userService.RegisterUserAsync(request);
             if (!result.IsSuccess)
                 return BadRequest(result);
 
@@ -36,7 +37,7 @@ namespace Friendly.WebAPI.Controllers
         public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
         {
 
-            var result = await _service.LoginUserAsync(request);
+            var result = await _userService.LoginUserAsync(request);
             if (!result.IsSuccess)
                 return BadRequest(result);
 
@@ -52,7 +53,7 @@ namespace Friendly.WebAPI.Controllers
                 return NotFound();
             }
 
-            var result = await _service.ConfirmEmailAsync(userId, token);
+            var result = await _userService.ConfirmEmailAsync(userId, token);
 
             if (result.IsSuccess)
             {
@@ -69,7 +70,7 @@ namespace Friendly.WebAPI.Controllers
             if (string.IsNullOrEmpty(email))
                 return BadRequest();
 
-            var result = await _service.ForgotPasswordAsync(email);
+            var result = await _userService.ForgotPasswordAsync(email);
             if (result.IsSuccess)
                 return Ok(result);
 
@@ -81,7 +82,7 @@ namespace Friendly.WebAPI.Controllers
         public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordRequest model)
         {
 
-            var result = await _service.ResetpasswordAsync(model);
+            var result = await _userService.ResetpasswordAsync(model);
             if (result.IsSuccess)
                 return Ok(result);
 
@@ -93,7 +94,7 @@ namespace Friendly.WebAPI.Controllers
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserRequest request)
         {
 
-            var result = await _service.UpdateUser(id, request);
+            var result = await _userService.UpdateUser(id, request);
 
             if (!result.IsSuccess)
             {
@@ -107,7 +108,7 @@ namespace Friendly.WebAPI.Controllers
         [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var result = await _service.DeleteUser(id);
+            var result = await _userService.DeleteUser(id);
 
             if (!result.IsSuccess)
             {

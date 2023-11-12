@@ -1,9 +1,10 @@
 ﻿using Friendly.Model.Requests;
 using Friendly.Model.Requests.User;
+using Friendly.Model.SearchObjects;
 
 namespace Friendly.Service
 {
-    public interface IUserService
+    public interface IUserService : IReadService<Model.User, SearchUserRequest>
     {
         public Task<Model.UserManagerResponse> RegisterUserAsync(UserRegisterRequest request);
         public Task<Model.UserManagerResponse> LoginUserAsync(UserLoginRequest request);
