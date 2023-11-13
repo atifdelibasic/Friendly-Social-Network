@@ -44,6 +44,18 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+builder.Services.AddSignalR();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CORSPolicy",
+        builder => builder
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .SetIsOriginAllowed((hosts) => true));
+});
+
 builder.Services.ConfigureAspNetIdentity();
 
 builder.Services.AddControllers(x =>
@@ -70,15 +82,25 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
+app.UseCors("CORSPolicy");
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseAuthentication();
+
+app.UseRouting();
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapHub<ChatHub>("/example");
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.MapControllers();
+//app.MapControllers();
+
 
 app.Run();

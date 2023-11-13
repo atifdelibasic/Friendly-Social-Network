@@ -28,5 +28,6 @@ namespace Friendly.Database
         public DbSet<Friendship> Friendship { get; set; }
         public DbSet<Comment> Comment { get; set; }
         public DbSet<Like> Like { get; set; }
+        public DbSet<Message> Message { get; set; }
     }
 }
