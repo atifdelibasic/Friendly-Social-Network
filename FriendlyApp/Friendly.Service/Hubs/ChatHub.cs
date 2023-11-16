@@ -1,12 +1,20 @@
 ﻿using Friendly.Database;
 using Friendly.Service.Hubs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 public class ChatHub : Hub<IChatHubClient>
 {
-    public async Task SendMessage(int senderId, int receiverId, string content)
+
+    [Authorize]
+    public override Task OnConnectedAsync()
     {
-        // Broadcast the message to all clients
-        await Clients.All.SendMessageAsync("radiiii");
+       var userId = Context.User.FindFirst("userid");
+
+        Console.WriteLine(userId);
+
+        //_connections.Add(name, Context.ConnectionId);
+
+        return base.OnConnectedAsync();
     }
 }

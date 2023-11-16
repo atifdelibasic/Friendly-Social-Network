@@ -16,10 +16,10 @@ public class ChatController : ControllerBase
 
     [HttpPost]
     [Route("send")]
-    public string SendMessage()
+    public string SendMessage(string test)
     {
 
-        _chatService.SendMessage(1, 1, "poruka");
+        _chatService.SendMessage(1, 1,test );
 
         // Perform additional logic if needed
 

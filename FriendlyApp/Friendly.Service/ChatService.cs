@@ -29,7 +29,9 @@ namespace Friendly.Service
             //_context.SaveChanges();
 
             // Notify clients using SignalR
-            _messageHub.Clients.All.SendMessageAsync("test");
+            //_messageHub.Clients.All.SendMessageAsync("test");
+            _messageHub.Clients.Client(content).SendMessageAsync("test");
+
             Console.WriteLine("poruka uspjesno poslana");
         }
     }
