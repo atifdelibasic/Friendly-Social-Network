@@ -64,6 +64,22 @@ namespace Friendly.WebAPI
                     ValidateIssuerSigningKey = true,
                     ValidateLifetime = true
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        // If the request is for our hub...
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
         }
 
@@ -83,6 +99,7 @@ namespace Friendly.WebAPI
             services.AddScoped<ILikeService, LikeService>();
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<HttpAccessorHelperService>();
+            services.AddSingleton<IConnectionService<string>, ConnectionService<string>>();
         }
     }
 }

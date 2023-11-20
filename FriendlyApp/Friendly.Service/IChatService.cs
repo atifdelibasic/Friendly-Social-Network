@@ -8,6 +8,6 @@ namespace Friendly.Service
 {
     public interface IChatService
     {
-        void SendMessage(int senderId, int receiverId, string content);
+        void SendMessage(int recipientId, string message);
     }
 }

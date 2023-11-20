@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class ChatController : ControllerBase
 {
     private readonly IChatService _chatService;
@@ -16,10 +17,10 @@ public class ChatController : ControllerBase
 
     [HttpPost]
     [Route("send")]
-    public string SendMessage(string test)
+    public string SendMessage(int recipientId, string message)
     {
 
-        _chatService.SendMessage(1, 1,test );
+        _chatService.SendMessage(recipientId, message );
 
         // Perform additional logic if needed
 

@@ -44,6 +44,15 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+
+builder.Services.ConfigureAspNetIdentity();
+
+builder.Services.AddControllers(x =>
+{
+    x.Filters.Add<ErrorFilter>();
+});
+
+
 builder.Services.AddSignalR();
 
 builder.Services.AddCors(options =>
@@ -55,15 +64,8 @@ builder.Services.AddCors(options =>
         .AllowCredentials()
         .SetIsOriginAllowed((hosts) => true));
 });
-
-builder.Services.ConfigureAspNetIdentity();
-
-builder.Services.AddControllers(x =>
-{
-    x.Filters.Add<ErrorFilter>();
-});
-
 builder.Services.ConfigureAuthentication(configuration);
+
 
 builder.Services.ConfigureServices();
 
@@ -74,6 +76,7 @@ builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -82,13 +85,13 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-app.UseCors("CORSPolicy");
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseAuthentication();
 
 app.UseRouting();
+app.UseCors("CORSPolicy");
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
