@@ -1,11 +1,11 @@
-﻿using Friendly.Service;
+﻿using Friendly.Model.Requests.Message;
+using Friendly.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-
-[Route("api/[controller]")]
-[ApiController]
 [Authorize]
+[Route("[controller]")]
+[ApiController]
 public class ChatController : ControllerBase
 {
     private readonly IChatService _chatService;
@@ -16,14 +16,11 @@ public class ChatController : ControllerBase
     }
 
     [HttpPost]
-    [Route("send")]
-    public string SendMessage(int recipientId, string message)
+    [Route("store")]
+    public async Task<IActionResult> StoreMessage(SendMessageRequest request)
     {
+       var result = await _chatService.StoreMessage(request);
 
-        _chatService.SendMessage(recipientId, message );
-
-        // Perform additional logic if needed
-
-        return "done";
+        return Ok(result);
     }
 }

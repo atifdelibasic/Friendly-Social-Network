@@ -15,11 +15,9 @@ namespace Friendly.Database
 
         public User Sender { get; set; }
 
-        [ForeignKey("SenderId")]
-        public int RecieverId { get; set; }
+        [ForeignKey("RecipientId")]
+        public int RecipientId { get; set; }
 
-        public User Reciever { get; set; }
-
-        public DateTime Timestamp { get; set; }
+        public User Recipient { get; set; }
     }
 }

@@ -2,10 +2,25 @@ using Friendly.Database;
 using Friendly.WebAPI;
 using Friendly.WebAPI.Filter;
 using Hangfire;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSignalR(
+    options => options.EnableDetailedErrors = true
+    ) ;
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CORSPolicy",
+        builder => builder
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .SetIsOriginAllowed((hosts) => true));
+});
 
 ConfigurationManager configuration = builder.Configuration;
 
@@ -53,17 +68,7 @@ builder.Services.AddControllers(x =>
 });
 
 
-builder.Services.AddSignalR();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("CORSPolicy",
-        builder => builder
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials()
-        .SetIsOriginAllowed((hosts) => true));
-});
 builder.Services.ConfigureAuthentication(configuration);
 
 
@@ -89,6 +94,8 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseAuthentication();
+app.UseHttpsRedirection();
+app.UseWebSockets();
 
 app.UseRouting();
 app.UseCors("CORSPolicy");
@@ -100,10 +107,6 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<ChatHub>("/example");
 });
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-//app.MapControllers();
-
 
 app.Run();
