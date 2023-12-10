@@ -97,6 +97,7 @@ namespace Friendly.WebAPI
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ILikeService, LikeService>();
             services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IBlockService, BlockService>();
             services.AddScoped<HttpAccessorHelperService>();
             services.AddSingleton<IConnectionService<string>, ConnectionService<string>>();
         }

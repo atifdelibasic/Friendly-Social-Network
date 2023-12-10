@@ -29,5 +29,6 @@ namespace Friendly.Database
         public DbSet<Comment> Comment { get; set; }
         public DbSet<Like> Like { get; set; }
         public DbSet<Message> Message { get; set; }
+        public DbSet<Block> Block { get; set; }
     }
 }

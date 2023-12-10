@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Friendly.Database;
 using Friendly.Model.Requests.Message;
-using Friendly.Service.Hubs;
-using Microsoft.AspNetCore.SignalR;
 
 namespace Friendly.Service
 {
