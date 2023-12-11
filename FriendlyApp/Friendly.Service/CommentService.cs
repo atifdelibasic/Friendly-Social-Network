@@ -49,6 +49,7 @@ namespace Friendly.Service
 
             return _mapper.Map<List<Comment>>(comments);
         }
+
         public override IQueryable<Database.Comment> AddFilter(IQueryable<Database.Comment> query, SearchCommentRequest? search = null)
         {
             query = query.Where(x => x.PostId == search.PostId).OrderBy(x => x.Id);

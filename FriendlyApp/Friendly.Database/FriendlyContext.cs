@@ -30,5 +30,7 @@ namespace Friendly.Database
         public DbSet<Like> Like { get; set; }
         public DbSet<Message> Message { get; set; }
         public DbSet<Block> Block { get; set; }
+        public DbSet<Report> Report { get; set; }
+        public DbSet<ReportReason> ReportReason { get; set; }
     }
 }

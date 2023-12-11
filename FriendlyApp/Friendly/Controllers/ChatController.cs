@@ -23,4 +23,7 @@ public class ChatController : ControllerBase
 
         return Ok(result);
     }
+
+   
+
 }

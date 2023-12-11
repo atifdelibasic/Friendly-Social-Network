@@ -4,6 +4,7 @@ using Friendly.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Friendly.Database.Migrations
 {
     [DbContext(typeof(FriendlyContext))]
-    partial class FriendlyContextModelSnapshot : ModelSnapshot
+    [Migration("20231210152728_add_report_tables")]
+    partial class add_report_tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -318,6 +320,9 @@ namespace Friendly.Database.Migrations
 
                     b.Property<int?>("PostId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("ReportDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ReportReasonId")
                         .HasColumnType("int");
