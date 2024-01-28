@@ -1,0 +1,28 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  sql:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    restart: unless-stopped
+    container_name: sql_server2022
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=A&VeryComplex123Password
+    networks:
+      - mynetwork
+
+  web_api:
+    restart: unless-stopped
+    build: .  # build the Docker image
+    container_name: web_api_application
+    ports:
+      - "5000:80"
+    depends_on:
+      - sql
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge

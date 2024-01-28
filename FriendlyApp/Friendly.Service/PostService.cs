@@ -2,16 +2,21 @@
 using Friendly.Database;
 using Friendly.Model.Requests.Post;
 using Friendly.Model.SearchObjects;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Friendly.Service
 {
     public class PostService : BaseCRUDService<Model.Post, Database.Post, SearchPostRequest, CreatePostRequest, UpdatePostRequest>, IPostService
     {
         private readonly HttpAccessorHelperService _httpAccessorHelper;
-        public PostService(Database.FriendlyContext context, IMapper mapper, HttpAccessorHelperService httpAccessorHelper) : base(context, mapper)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        public PostService(Database.FriendlyContext context, IMapper mapper, HttpAccessorHelperService httpAccessorHelper, IWebHostEnvironment hostingEnvironment) : base(context, mapper)
         {
             _httpAccessorHelper = httpAccessorHelper;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public override async Task<Model.Post> Insert(CreatePostRequest request)
@@ -43,7 +48,6 @@ namespace Friendly.Service
                 .Where(f => (f.UserId == userId || f.FriendId == userId) && f.Status == Database.FriendshipStatus.Friends)
                 .Select(f => f.UserId == userId ? f.FriendId : f.UserId);
 
-
             var query = _context.Post
                 .Where(p => friendsIds.Contains(p.UserId) || p.UserId == userId)
                 .Include(p => p.User)
@@ -52,20 +56,25 @@ namespace Friendly.Service
                 {
                     Id = p.Id,
                     Description = p.Description,
-                    ImagePath = p.ImagePath,
+                    ImagePath = p.ImagePath != null
+            ? Path.Combine(_hostingEnvironment.WebRootPath, p.ImagePath)
+            : null,
                     LikeCount = p.Likes.Count,
                     CommentCount = p.Comments.Count,
                     Hobby = _mapper.Map<Model.Hobby>(p.Hobby),
-                    User = _mapper.Map<Model.User>(p.User)
-                })
-                .OrderByDescending(p => p.Id)
-                .Take(request.Limit)
-                .AsNoTracking();
+                    User = _mapper.Map<Model.User>(p.User),
+                    IsLikedByUser = p.Likes.Any(l => l.UserId == userId),
+                    DateCreated = p.DateCreated
+                });
 
             if (request.Cursor.HasValue)
             {
-                query = query.Where(p => p.Id > request.Cursor.Value);
+                query = query.Where(p => p.Id < request.Cursor.Value);
             }
+
+            query = query.OrderByDescending(p => p.Id)
+                .Take(request.Limit)
+                .AsNoTracking();
 
             var posts = await query.ToListAsync();
 

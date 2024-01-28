@@ -2,12 +2,13 @@
 using Friendly.Model;
 using Friendly.Model.Requests.Comment;
 using Friendly.Model.SearchObjects;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SendGrid.Helpers.Errors.Model;
 
 namespace Friendly.Service
 {
-    public class CommentService: BaseCRUDService<Model.Comment, Database.Comment, SearchCommentRequest, CreateCommentRequest, UpdateCommentRequest>, ICommentService
+    public class CommentService : BaseCRUDService<Model.Comment, Database.Comment, SearchCommentRequest, CreateCommentRequest, UpdateCommentRequest>, ICommentService
     {
         private readonly HttpAccessorHelperService _httpAccessorHelper;
         public CommentService(Database.FriendlyContext context, IMapper mapper, HttpAccessorHelperService httpAccessorHelper) : base(context, mapper)
@@ -30,7 +31,7 @@ namespace Friendly.Service
             return await ExtendedInsert(request, entity);
         }
 
-        public  async Task<List<Model.Comment>> GetCommentsCursor(SearchCommentCursorRequest search)
+        public async Task<List<Model.Comment>> GetCommentsCursor(string baseUrl, SearchCommentCursorRequest search)
         {
             var query = _context.Comment
                 .Where(x => x.PostId == search.PostId);
@@ -41,8 +42,7 @@ namespace Friendly.Service
             }
 
             query = query
-                .Include(x => x.User)
-                .OrderBy(x => x.Id)
+                .OrderByDescending(x => x.Id)
                 .Take(search.Limit);
 
             var comments = await query.ToListAsync();
@@ -64,7 +64,7 @@ namespace Friendly.Service
             return base.AddInclude(query, search);
         }
 
-        public  async Task<Comment> DeleteComment(int id)
+        public async Task<Comment> DeleteComment(int id)
         {
             Database.Comment comment = await getById(id);
             if (comment == null)

@@ -28,6 +28,7 @@ ConfigurationManager configuration = builder.Configuration;
 
 builder.Services.AddDbContext<FriendlyContext>(
            options => options.UseSqlServer(configuration["ConnectionStrings:DefaultConnection"]));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
@@ -80,6 +81,12 @@ builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration["Connectio
 builder.Services.AddHangfireServer();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    SeedData.Initialize(services);
+}
 
 
 // Configure the HTTP request pipeline.

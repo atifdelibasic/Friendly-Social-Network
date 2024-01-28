@@ -39,8 +39,4 @@
     <ProjectReference Include="..\Friendly.Service\Friendly.Service.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\images\" />
-  </ItemGroup>
-
 </Project>

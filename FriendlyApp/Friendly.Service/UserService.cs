@@ -33,6 +33,7 @@ namespace Friendly.Service
         {
             var user = _mapper.Map<Database.User>(request);
             user.UserName = user.Email;
+            user.EmailConfirmed = true;
 
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)

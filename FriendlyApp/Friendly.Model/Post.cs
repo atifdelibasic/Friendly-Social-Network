@@ -12,5 +12,6 @@ namespace Friendly.Model
         public int CommentCount { get; set; }
         public User User { get; set; }
         public Hobby Hobby { get; set; }
+        public bool IsLikedByUser { get; set; }
     }
 }
