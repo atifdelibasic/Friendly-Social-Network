@@ -13,5 +13,7 @@ namespace Friendly.Model
         public User User { get; set; }
         public Hobby Hobby { get; set; }
         public bool IsLikedByUser { get; set; }
+        public double? Longitude { get; set; }
+        public double? Latitude { get; set; }
     }
 }

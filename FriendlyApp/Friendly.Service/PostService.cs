@@ -56,15 +56,15 @@ namespace Friendly.Service
                 {
                     Id = p.Id,
                     Description = p.Description,
-                    ImagePath = p.ImagePath != null
-            ? Path.Combine(_hostingEnvironment.WebRootPath, p.ImagePath)
-            : null,
+                    ImagePath = p.ImagePath,
                     LikeCount = p.Likes.Count,
                     CommentCount = p.Comments.Count,
                     Hobby = _mapper.Map<Model.Hobby>(p.Hobby),
                     User = _mapper.Map<Model.User>(p.User),
                     IsLikedByUser = p.Likes.Any(l => l.UserId == userId),
-                    DateCreated = p.DateCreated
+                    DateCreated = p.DateCreated,
+                    Longitude= p.Longitude,
+                    Latitude = p.Latitude
                 });
 
             if (request.Cursor.HasValue)
@@ -106,7 +106,9 @@ namespace Friendly.Service
                     LikeCount = p.Likes.Count,
                     CommentCount = p.Comments.Count,
                     Hobby = _mapper.Map<Model.Hobby>(p.Hobby),
-                    User = _mapper.Map<Model.User>(p.User)
+                    User = _mapper.Map<Model.User>(p.User),
+                    Longitude = p.Longitude,
+                    Latitude = p.Latitude
                 })
                 .AsNoTracking();
 
@@ -132,6 +134,13 @@ namespace Friendly.Service
         {
             query = query.Include(x => x.User).Include(x => x.Hobby);
             return base.AddFilter(query, search);
+        }
+
+        public async Task DeletePost(int id)
+        {
+            Database.Post post = await getById(id);
+            post.DeletedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -42,6 +42,7 @@ namespace Friendly.Service
             }
 
             query = query
+                .Include(x => x.User)
                 .OrderByDescending(x => x.Id)
                 .Take(search.Limit);
 

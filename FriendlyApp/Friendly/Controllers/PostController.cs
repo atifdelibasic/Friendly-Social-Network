@@ -32,5 +32,13 @@ namespace Friendly.WebAPI.Controllers
 
             return Ok(posts);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePost( int id)
+        {
+             await _postService.DeletePost(id);
+
+            return Ok();
+        }
     }
 }

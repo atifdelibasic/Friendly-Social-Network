@@ -7,8 +7,6 @@
             Console.WriteLine("ovdje saaam!");
             Console.WriteLine("ovdje saaam!");
             Console.WriteLine("ovdje saaam!");
-            Console.WriteLine("ovdje saaam!");
-            Console.WriteLine("ovdje saaam!");
 
         }
     }

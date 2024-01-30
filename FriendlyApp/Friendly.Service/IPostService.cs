@@ -8,5 +8,7 @@ namespace Friendly.Service
     {
         public Task<List<Model.Post>> GetFriendsPosts(BaseCursorSearchObject request);
         public Task<List<Model.Post>> GetNearbyPosts(SearchNearbyPostsRequest request);
+        public Task DeletePost(int id);
+
     }
 }
