@@ -136,12 +136,12 @@ namespace Friendly.Service
 
             string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
 
-
             return new UserManagerResponse
             {
                 Message = tokenAsString,
                 IsSuccess = true,
-            };
+                User = _mapper.Map<User>(user)
+        };
         }
 
         public async Task<UserManagerResponse> ConfirmEmailAsync(string userId, string token)
