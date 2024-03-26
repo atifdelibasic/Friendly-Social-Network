@@ -25,21 +25,23 @@ public class ChatHub : Hub<IChatHubClient>
 
         var connections = _connectionService.GetConnections(key);
 
-        if (connections is null || !connections.Any())
-        {
-            return;
-        }
-
+       
         if (!string.IsNullOrEmpty(message.Trim()))
         {
             string filteredMessage = Regex.Replace(message, @"<.*?>", string.Empty);
 
-            foreach (var connectionId in _connectionService.GetConnections(key))
+            if (connections is null || !connections.Any())
             {
-                await Clients.Client(connectionId).SendMessageAsync(filteredMessage);
+                await Clients.Caller.SendMessageAsync(filteredMessage, true);
+                return;
             }
 
-            await Clients.Caller.SendMessageAsync(filteredMessage);
+            foreach (var connectionId in _connectionService.GetConnections(key))
+            {
+                await Clients.Client(connectionId).SendMessageAsync(filteredMessage, false);
+            }
+
+            await Clients.Caller.SendMessageAsync(filteredMessage, true);
         }
     }
 

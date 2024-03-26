@@ -42,15 +42,6 @@ namespace Friendly.WebAPI.Controllers
         {
             int userId = Convert.ToInt32(HttpContext.Items["UserId"]);
 
-
-            Model.Friendship friendRequest = await _friendshipService.GetFriendshipStatus(userId, id);
-
-            if (friendRequest is not null)
-            {
-                return Ok(friendRequest);
-                
-            }
-
             var newFriendRequest =  await _friendshipService.SendFriendRequest(userId, id);
 
 

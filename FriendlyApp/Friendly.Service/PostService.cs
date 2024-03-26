@@ -3,7 +3,6 @@ using Friendly.Database;
 using Friendly.Model.Requests.Post;
 using Friendly.Model.SearchObjects;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -38,6 +37,41 @@ namespace Friendly.Service
             Database.Post entity = new Database.Post { UserId = userId };
 
             return await ExtendedInsert(request, entity);
+        }
+
+        public async Task<List<Model.Post>> GetUserPostsCursor(GetUserPostsRequest request)
+        {
+            var query = _context.Post
+                .Where(x => x.UserId == request.UserId)
+                .Include(p => p.User)
+                .Include(p => p.Hobby)
+                .Select(p => new Model.Post
+                {
+                    Id = p.Id,
+                    Description = p.Description,
+                    ImagePath = p.ImagePath,
+                    LikeCount = p.Likes.Count,
+                    CommentCount = p.Comments.Count,
+                    Hobby = _mapper.Map<Model.Hobby>(p.Hobby),
+                    User = _mapper.Map<Model.User>(p.User),
+                    IsLikedByUser = p.Likes.Any(l => l.UserId == request.UserId),
+                    DateCreated = p.DateCreated,
+                    Longitude = p.Longitude,
+                    Latitude = p.Latitude
+                });
+
+            if (request.Cursor.HasValue)
+            {
+                query = query.Where(p => p.Id < request.Cursor.Value);
+            }
+
+            query = query.OrderByDescending(p => p.Id)
+                .Take(request.Limit)
+                .AsNoTracking();
+
+            var posts = await query.ToListAsync();
+
+            return _mapper.Map<List<Model.Post>>(posts);
         }
 
         public async Task<List<Model.Post>> GetFriendsPosts(BaseCursorSearchObject request)

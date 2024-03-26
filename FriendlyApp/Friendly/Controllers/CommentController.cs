@@ -30,11 +30,7 @@ namespace Friendly.WebAPI.Controllers
         [HttpGet("cursor")]
         public async Task<IActionResult> GetCommentsCursor([FromQuery]SearchCommentCursorRequest request)
         {
-            Console.WriteLine("ovdjeee sammmm");
-            Console.WriteLine(HttpContext.Request.Scheme);
-            Console.WriteLine(HttpContext.Request.Host.Value);
-            var comments = await _service.GetCommentsCursor("", request);
-
+            var comments = await _service.GetCommentsCursor(request);
 
             return Ok(comments);
         }

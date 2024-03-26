@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Friendly.Database
 {
@@ -9,7 +8,7 @@ namespace Friendly.Database
         public string LastName { get; set; }
         public DateTime DateCreated { get; set; } = DateTime.Now;
         public DateTime DateModified { get; set; }
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         public string? ProfileImageUrl { get; set; }
         public string? About { get; set; }
         public DateTime? DeletedAt { get; set; }

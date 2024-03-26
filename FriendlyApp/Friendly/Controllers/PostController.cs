@@ -25,6 +25,14 @@ namespace Friendly.WebAPI.Controllers
             return Ok(posts);
         }
 
+        [HttpGet("user")]
+        public async Task<IActionResult> GetUserPosts([FromQuery] GetUserPostsRequest request)
+        {
+            var posts = await _postService.GetUserPostsCursor(request);
+
+            return Ok(posts);
+        }
+
         [HttpGet("nearby")]
         public async Task<IActionResult> GetNearbyPosts([FromQuery] SearchNearbyPostsRequest request)
         {

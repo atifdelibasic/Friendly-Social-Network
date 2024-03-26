@@ -7,7 +7,7 @@ namespace Friendly.Service
     public interface ICommentService : ICRUDService<Model.Comment, SearchCommentRequest, CreateCommentRequest, UpdateCommentRequest>
     {
         public Task<Model.Comment> DeleteComment(int id);
-        public Task<List<Model.Comment>> GetCommentsCursor(string baseUrl, SearchCommentCursorRequest search);
+        public Task<List<Model.Comment>> GetCommentsCursor(SearchCommentCursorRequest search);
 
     }
 }

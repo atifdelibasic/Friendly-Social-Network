@@ -58,11 +58,11 @@ namespace Friendly.WebAPI
                     ValidAudience = configuration["AuthSettings:ValidAudience"],
                     ValidIssuer = configuration["AuthSettings:ValidIssuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["AuthSettings:Key"])),
-                    // RequireExpirationTime = true,
+                    RequireExpirationTime = false,
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
-                    ValidateLifetime = true
+                    ValidateLifetime = true,
                 };
                 options.Events = new JwtBearerEvents
                 {

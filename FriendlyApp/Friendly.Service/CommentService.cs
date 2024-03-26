@@ -31,7 +31,7 @@ namespace Friendly.Service
             return await ExtendedInsert(request, entity);
         }
 
-        public async Task<List<Model.Comment>> GetCommentsCursor(string baseUrl, SearchCommentCursorRequest search)
+        public async Task<List<Model.Comment>> GetCommentsCursor(SearchCommentCursorRequest search)
         {
             var query = _context.Comment
                 .Where(x => x.PostId == search.PostId);

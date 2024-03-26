@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSignalR(
     options => options.EnableDetailedErrors = true
-    ) ;
+    ).AddMessagePackProtocol() ;
 
 builder.Services.AddCors(options =>
 {
