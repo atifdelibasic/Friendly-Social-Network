@@ -18,5 +18,7 @@ namespace Friendly.Database
         public virtual int? GenderId { get; set; }
         public virtual Gender Gender { get; set; }
 
+        public string Description { get; set; }
+
     }
 }

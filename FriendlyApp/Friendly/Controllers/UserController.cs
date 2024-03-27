@@ -117,5 +117,14 @@ namespace Friendly.WebAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("cursor")]
+        [Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> GetUsersCursor([FromQuery] SearchUserCursorRequest request)
+        {
+            var result = await _userService.GetUsersCursor(request);
+
+            return Ok(result);
+        }
     }
 }

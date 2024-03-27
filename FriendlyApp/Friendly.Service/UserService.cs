@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
 using Friendly.Model;
 using Friendly.Model.Requests;
+using Friendly.Model.Requests.Friendship;
 using Friendly.Model.Requests.User;
 using Friendly.Model.SearchObjects;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -323,6 +326,29 @@ namespace Friendly.Service
             }
 
             return base.AddFilter(query, search);
+        }
+
+        public async Task<List<Model.User>> GetUsersCursor(SearchUserCursorRequest request)
+        {
+            var query = _userManager.Users;
+
+            if(!String.IsNullOrEmpty(request.Text))
+            {
+                query = query.Where(x => x.FirstName.ToLower().Contains(request.Text) || x.LastName.ToLower().Contains(request.Text));
+            }
+
+            if (request.Cursor.HasValue)
+            {
+                query = query.Where(p => p.Id > request.Cursor.Value);
+            }
+
+            query = query.OrderBy(p => p.Id)
+               .Take(request.Limit)
+               .AsNoTracking();
+
+            var users = await query.ToListAsync();
+
+            return _mapper.Map<List<Model.User>>(users);
         }
     }
 }
