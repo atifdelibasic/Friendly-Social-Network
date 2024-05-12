@@ -142,7 +142,8 @@ namespace Friendly.Service
                     Hobby = _mapper.Map<Model.Hobby>(p.Hobby),
                     User = _mapper.Map<Model.User>(p.User),
                     Longitude = p.Longitude,
-                    Latitude = p.Latitude
+                    Latitude = p.Latitude,
+                    DateCreated = p.DateCreated,
                 })
                 .AsNoTracking();
 

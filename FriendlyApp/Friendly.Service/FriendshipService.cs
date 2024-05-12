@@ -130,7 +130,7 @@ namespace Friendly.Service
         {
             Database.Friendship friendship = await DbGetFriendshipById(id);
 
-            if (friendship == null || friendship.Status != Database.FriendshipStatus.Pending)
+            if (friendship == null )
             {
                 throw new NotFoundException("Friend request does not exist.");
             }

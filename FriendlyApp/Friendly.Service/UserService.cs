@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Friendly.Database;
 using Friendly.Model;
 using Friendly.Model.Requests;
 using Friendly.Model.Requests.Friendship;
@@ -134,7 +135,7 @@ namespace Friendly.Service
                 issuer: _configuration["AuthSettings:ValidIssuer"],
                 audience: _configuration["AuthSettings:ValidAudience"],
                 claims: claims,
-                expires: DateTime.Now.AddDays(5),
+                //expires: DateTime.Now.AddDays(5),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
 
             string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
@@ -143,7 +144,7 @@ namespace Friendly.Service
             {
                 Message = tokenAsString,
                 IsSuccess = true,
-                User = _mapper.Map<User>(user)
+                User = _mapper.Map<Model.User>(user)
         };
         }
 
@@ -262,10 +263,24 @@ namespace Friendly.Service
             }
 
 
+            if (!string.IsNullOrEmpty(request.ImagePath))
+            {
+                byte[] imageBytes = Convert.FromBase64String(request.ImagePath);
+
+                var fileName = $"{Guid.NewGuid()}.jpg";
+
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+                File.WriteAllBytes(path, imageBytes);
+
+                request.ImagePath = fileName;
+            }
+
+            user.ProfileImageUrl = request.ImagePath;
+
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
-            user.BirthDate = (DateTime)request.BirthDate;
-            user.DateModified = request.DateModified;
+            user.BirthDate = request.BirthDate;
+            user.Description = request.Description;
 
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
@@ -277,6 +292,11 @@ namespace Friendly.Service
                 };
             }
 
+            var updateUserHobbies = await AddHobby(new AddHobbyRequest
+            {
+                HobbyIds = request.HobbyIds
+            }, user.Id);
+
             return new UserManagerResponse
             {
                 IsSuccess = true,
@@ -286,7 +306,7 @@ namespace Friendly.Service
 
         public async Task<UserManagerResponse> DeleteUser(int id)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
+            var user = await _context.Users.FindAsync(id);
 
             if (user is null)
             {
@@ -350,5 +370,54 @@ namespace Friendly.Service
 
             return _mapper.Map<List<Model.User>>(users);
         }
+
+        public async Task<List<Model.Hobby>> GetUserHobbies(int id)
+        {
+            var hobbies = await _context.UserHobbies
+                .Where(x => x.UserId == id)
+                .Include(x => x.Hobby)
+                 .Select(uh => uh.Hobby)
+                .ToListAsync();
+
+            return _mapper.Map<List<Model.Hobby>>(hobbies);
+        }
+
+        public async Task<List<Model.Hobby>> AddHobby(AddHobbyRequest request, int id)
+        {
+            var user = await _context.Users
+                .Include(u => u.UserHobbies)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            // Remove hobbies that are not in the list
+            var hobbiesToRemove = user.UserHobbies
+                .Where(uh => !request.HobbyIds.Contains(uh.HobbyId))
+                .ToList();
+
+            foreach (var hobbyToRemove in hobbiesToRemove)
+            {
+                user.UserHobbies.Remove(hobbyToRemove);
+            }
+
+            // Add/create hobbies from the list that do not exist
+            var hobbiesToAddIds = request.HobbyIds
+                .Where(hId => !user.UserHobbies.Any(uh => uh.HobbyId == hId))
+                .ToList();
+
+            var hobbiesToAdd = await _context.Hobby
+                .Where(h => hobbiesToAddIds.Contains(h.Id))
+                .ToListAsync();
+
+            foreach (var hobby in hobbiesToAdd)
+            {
+                user.UserHobbies.Add(new UserHobby { User = user, Hobby = hobby });
+            }
+
+            await _context.SaveChangesAsync();
+
+            var userHobbies = await GetUserHobbies(id);
+
+            return _mapper.Map<List<Model.Hobby>>(userHobbies);
+        }
+
     }
 }

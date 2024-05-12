@@ -15,12 +15,16 @@ namespace Friendly.Model.Requests.User
         [StringLength(50, MinimumLength = 3)]
         public string LastName { get; set; }
 
-        [Required]
         [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime? BirthDate { get; set; }
 
         public DateTime DateModified { get; set; } = DateTime.UtcNow;
-        
+
+        public string ProfileImageUrl { get; set; }
+
+        public string ImagePath { get; set; }
+        public List<int> HobbyIds { get; set; }
+        public string? Description { get; set; }
     }
 }

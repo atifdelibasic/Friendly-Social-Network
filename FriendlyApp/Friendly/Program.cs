@@ -1,4 +1,4 @@
-using Friendly.Database;
+    using Friendly.Database;
 using Friendly.WebAPI;
 using Friendly.WebAPI.Filter;
 using Hangfire;
@@ -84,6 +84,9 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+
+    var db = scope.ServiceProvider.GetRequiredService<FriendlyContext>();
+    db.Database.Migrate();
 
     SeedData.Initialize(services);
 }

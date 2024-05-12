@@ -23,6 +23,38 @@ services:
     networks:
       - mynetwork
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: "rabbitmq"
+    environment:
+    - RABBITMQ_DEFAULT_USER=myuser
+    - RABBITMQ_DEFAULT_PASS=mypass
+    labels:
+      NAME: "rabbitmq"
+    ports: 
+    - "4369:4369"
+    - "5671:5671"
+    - "5672:5672"
+    - "25672:25672"
+    - "15671:15671"
+    - "15672:15672"
+    depends_on:
+      - web_api
+    networks:
+      - mynetwork
+
+  rabbitmq_consumer:
+    build: 
+      context: .
+      dockerfile: ./ConsumerServiceApp/Dockerfile
+    links:
+    - web_api
+    depends_on:
+      - web_api
+      - rabbitmq
+    networks:
+      - mynetwork
+
 networks:
   mynetwork:
     driver: bridge

@@ -1,9 +1,11 @@
 ﻿using Friendly.Database;
 using Friendly.Service;
+using Friendly.Service.Brokers;
 using Friendly.WebAPI.PasswordValidator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using publisher_api.Services;
 using System.Text;
 
 namespace Friendly.WebAPI
@@ -101,6 +103,9 @@ namespace Friendly.WebAPI
             services.AddScoped<IReportService, ReportService>();
             services.AddScoped<HttpAccessorHelperService>();
             services.AddSingleton<IConnectionService<string>, ConnectionService<string>>();
+
+            //services.AddScoped<IMessageProducer, MessageProducer>();
+            services.AddSingleton<IMessageService, MessageService>();
         }
     }
 }

@@ -14,5 +14,8 @@ namespace Friendly.Service
         public Task<Model.UserManagerResponse> UpdateUser(int id, UpdateUserRequest request);
         public Task<Model.UserManagerResponse> DeleteUser(int id);
         public Task<List<Model.User>> GetUsersCursor(SearchUserCursorRequest request);
+        public Task<List<Model.Hobby>> GetUserHobbies(int id);
+        public Task<List<Model.Hobby>> AddHobby(AddHobbyRequest request, int id);
+        
     }
 }

@@ -126,5 +126,23 @@ namespace Friendly.WebAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("{id}/hobbies")]
+        [Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> GetUserHobbies(int id)
+        {
+            var result = await _userService.GetUserHobbies(id);
+
+            return Ok(result);
+        }
+
+        [HttpPost("{id}/hobbies")]
+        [Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> AddHobby([FromBody] AddHobbyRequest request, int id)
+        {
+            var result = await _userService.AddHobby(request, id);
+
+            return Ok(result);
+        }
     }
 }
