@@ -15,14 +15,15 @@ git clone https://github.com/atifdelibasic/Friendly-Desktop
 
 Login data:
 
-This account has admin and user role:
+Mobile(iOS and Android) && Desktop app credentials:
 
 Email: atif.delibasic@gmail.com
 Password: Lozinka123!
 
-User
+Only mobile: 
 
 Email: john.smith@example.com
 Password: Lozinka123!
 
+Hint: same goes for every user in database. Email is fname + lname, and password is Lozinka123!
 
