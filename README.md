@@ -1,6 +1,3 @@
-Getting Started
-Running the Application
-Navigate to the Application Folder: Open your terminal or command prompt and navigate to the folder where the application is located.
 
 Build and Run with Docker Compose:
 
