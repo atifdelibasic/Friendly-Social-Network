@@ -1,13 +1,16 @@
-# Friendly-Social-Network
+Getting Started
+Running the Application
+Navigate to the Application Folder: Open your terminal or command prompt and navigate to the folder where the application is located.
 
-Navigate to folder where the app is located and run following command:
+Build and Run with Docker Compose:
 
-  docker-compose -f docker-compose.yml up --build
+docker-compose -f docker-compose.yml up --build
 
-  Clone the mobile app:
-  
-  https://github.com/atifdelibasic/Friendly-Mobile-App
+Cloning the Repositories
+Mobile App: Clone the mobile app repository using the following command:
 
-  Clone the desktop app: 
+git clone https://github.com/atifdelibasic/Friendly-Mobile-App
 
-  https://github.com/atifdelibasic/Friendly-Desktop
+Desktop App: Clone the desktop app repository using the following command:
+
+git clone https://github.com/atifdelibasic/Friendly-Desktop
