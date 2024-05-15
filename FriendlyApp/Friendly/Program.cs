@@ -4,6 +4,7 @@ using Friendly.WebAPI.Filter;
 using Hangfire;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -77,18 +78,25 @@ builder.Services.ConfigureServices();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
-builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration["ConnectionStrings:DefaultConnection"]));
-builder.Services.AddHangfireServer();
+//builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration["ConnectionStrings:DefaultConnection"]));
+//builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    var db = scope.ServiceProvider.GetRequiredService<FriendlyContext>();
-    db.Database.Migrate();
+    Console.WriteLine("ovjde sam migrateeee");
+    Console.WriteLine("ovjde sam migrateeee");
+    Console.WriteLine("ovjde sam migrateeee");
 
-    SeedData.Initialize(services);
+
+    var db = scope.ServiceProvider.GetRequiredService<FriendlyContext>();
+    await db.Database.MigrateAsync();
+
+
+
+    await SeedData.Initialize(db, services);
 }
 
 

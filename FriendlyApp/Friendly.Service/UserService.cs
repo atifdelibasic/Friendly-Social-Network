@@ -45,15 +45,15 @@ namespace Friendly.Service
                 var createdUser = _userManager.FindByEmailAsync(user.Email);
                 var role = _userManager.AddToRoleAsync(user, "User");
 
-                var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                //var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
-                var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+                //var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
+                //var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-                string url = $"{_configuration["AppUrl"]}/user/confirmemail?userId={user.Id}&token={validEmailToken}";
+                //string url = $"{_configuration["AppUrl"]}/user/confirmemail?userId={user.Id}&token={validEmailToken}";
 
                 // Send an Email confirmation 
-                var jobId = BackgroundJob.Enqueue(() => _emailService.SendEmailAsync(user.Email, "Confirm your Email", $"<a href='{url}'>Click here to confirm your Email.</a>"));
+               // var jobId = BackgroundJob.Enqueue(() => _emailService.SendEmailAsync(user.Email, "Confirm your Email", $"<a href='{url}'>Click here to confirm your Email.</a>"));
 
                 return new UserManagerResponse
                 {

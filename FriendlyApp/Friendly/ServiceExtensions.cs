@@ -38,8 +38,8 @@ namespace Friendly.WebAPI
                .AddDefaultTokenProviders()
                .AddRoles<IdentityRole<int>>()
                .AddEntityFrameworkStores<FriendlyContext>()
-               .AddPasswordValidator<EmailPasswordValidator>()
-               .AddPasswordValidator<CommonPasswordValidator<User>>();
+               .AddPasswordValidator<EmailPasswordValidator>();
+               //.AddPasswordValidator<CommonPasswordValidator<User>>();
 
             services.AddHttpContextAccessor();
 
@@ -103,8 +103,7 @@ namespace Friendly.WebAPI
             services.AddScoped<IReportService, ReportService>();
             services.AddScoped<HttpAccessorHelperService>();
             services.AddSingleton<IConnectionService<string>, ConnectionService<string>>();
-
-            //services.AddScoped<IMessageProducer, MessageProducer>();
+            services.AddScoped<IRecommenderService, RecommenderService>();
             services.AddSingleton<IMessageService, MessageService>();
         }
     }

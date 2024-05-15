@@ -1,4 +1,5 @@
-﻿using RabbitMQ.Client;
+﻿using Newtonsoft.Json.Linq;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
@@ -10,8 +11,7 @@ factory.Password = "mypass";
 try
 {
 
-    // Add retry logic to wait for RabbitMQ to become available
-    const int maxRetries = 10;
+    const int maxRetries = 20;
     int retryCount = 0;
 
     IConnection _conn = null;
@@ -24,22 +24,21 @@ try
             _conn = factory.CreateConnection();
             channel = _conn.CreateModel();
             Console.WriteLine("Connection established sucessfully!");
-            break; // Break out of the loop if connection is successful
+            break;
         }
         catch (Exception ex)
         {
-            // Log or print the exception if needed
             Console.WriteLine($"Failed to connect to RabbitMQ. Retry count: {retryCount + 1}. Error: {ex.Message}");
 
             retryCount++;
-            Thread.Sleep(10000); // Wait for 5 seconds before retrying
+            Thread.Sleep(10000); 
         }
     }
 
     if(channel != null)
     {
         Console.WriteLine("channel is different than null");
-        channel.QueueDeclare(queue: "hello", durable: false, exclusive: false,autoDelete: false, arguments: null);
+        channel.QueueDeclare(queue: "reportQueue", durable: false, exclusive: false,autoDelete: false, arguments: null);
     }
 
 
@@ -48,11 +47,9 @@ try
 consumer.Received += async (model, eventArgs) =>
 {
 
-    Console.WriteLine("message recieved");
     byte[] body = eventArgs.Body.ToArray();
     string message = Encoding.UTF8.GetString(body);
 
-    Console.WriteLine("dosla poruka");
     Console.WriteLine(message);
 
     var options = new JsonSerializerOptions
@@ -60,25 +57,45 @@ consumer.Received += async (model, eventArgs) =>
         PropertyNameCaseInsensitive = true,
     };
 
-    ReportModel deserializedReport = JsonSerializer.Deserialize<ReportModel>(message, options);
+    ReportModel report = JsonSerializer.Deserialize<ReportModel>(message, options);
     Console.WriteLine("deserialized object");
-    Console.WriteLine(deserializedReport.ToString());
-    Console.WriteLine(deserializedReport.additionalComment);
-
-
+    Console.WriteLine(report.additionalComment);
 
     using (var httpClient = new HttpClient())
     {
+        string token = report.Token;
+        if (token.StartsWith("Bearer "))
+        {
+            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.Substring(7));
+        }
+        else
+        {
+            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
         try
         {
-            Console.WriteLine("sibni request");
-            var response = await Task.Run(async () =>
-            {
-                return await httpClient.PostAsync("http://web_api:80/user/register", new StringContent("", Encoding.UTF8, "application/json"));
-            });
-            
-            Console.WriteLine("evo ga response");
+            string jsonReport = JsonSerializer.Serialize(report);
+            var content = new StringContent(jsonReport, Encoding.UTF8, "application/json");
+            Console.WriteLine("content");
+            Console.WriteLine(content);
+
+           
+                Console.WriteLine("posalji request");
+            var response =  await httpClient.PostAsync("http://web_api:80/report", content);
+
+            Console.WriteLine("status code");
             Console.WriteLine(response.StatusCode);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("Response content: " + responseContent);
+            }
+            else
+            {
+                Console.WriteLine("Error: " + response.ReasonPhrase);
+            }
+
         }
         catch (HttpRequestException ex)
         {
@@ -88,23 +105,18 @@ consumer.Received += async (model, eventArgs) =>
         }
     }
 
-    Console.WriteLine("dosla poruka jarooooo " + "");
 };
 
-channel.BasicConsume(queue:"hello",autoAck: true,consumer: consumer);
+channel.BasicConsume(queue: "reportQueue", autoAck: true,consumer: consumer);
 
 }
 catch (Exception ex)
 {
     Console.WriteLine("Exception occurred: " + ex.Message);
-    Console.WriteLine(ex.InnerException);
-    Console.Write(ex.StackTrace);
-    Console.WriteLine(factory.HostName);
-    Console.WriteLine(factory.UserName);
-    Console.WriteLine(factory.Password);
-
 }
 
+
+// keep it hanging 
 Thread.Sleep(Timeout.Infinite);
 
 public class ReportModel
@@ -113,4 +125,5 @@ public class ReportModel
     public int? commentId { get; set; }
     public int reportReasonId { get; set; }
     public string additionalComment { get; set; }
+    public string Token { get; set; }
 }
