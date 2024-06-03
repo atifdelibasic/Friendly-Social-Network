@@ -19,6 +19,7 @@ namespace Friendly.Database
         public virtual Gender Gender { get; set; }
 
         public string Description { get; set; }
-
+        public virtual int? CityId { get; set; }
+        public virtual City City { get; set; }
     }
 }

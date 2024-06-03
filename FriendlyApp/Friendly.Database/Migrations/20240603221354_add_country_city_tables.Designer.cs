@@ -4,6 +4,7 @@ using Friendly.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Friendly.Database.Migrations
 {
     [DbContext(typeof(FriendlyContext))]
-    partial class FriendlyContextModelSnapshot : ModelSnapshot
+    [Migration("20240603221354_add_country_city_tables")]
+    partial class add_country_city_tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -426,9 +428,6 @@ namespace Friendly.Database.Migrations
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("CityId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -498,8 +497,6 @@ namespace Friendly.Database.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CityId");
 
                     b.HasIndex("GenderId");
 
@@ -839,15 +836,9 @@ namespace Friendly.Database.Migrations
 
             modelBuilder.Entity("Friendly.Database.User", b =>
                 {
-                    b.HasOne("Friendly.Database.City", "City")
-                        .WithMany()
-                        .HasForeignKey("CityId");
-
                     b.HasOne("Friendly.Database.Gender", "Gender")
                         .WithMany("Users")
                         .HasForeignKey("GenderId");
-
-                    b.Navigation("City");
 
                     b.Navigation("Gender");
                 });

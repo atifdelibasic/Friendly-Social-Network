@@ -12,19 +12,4 @@
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Dockerfile-old.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Dockerfile-old</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Dockerfile-old">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Dockerfile-old.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-
 </Project>

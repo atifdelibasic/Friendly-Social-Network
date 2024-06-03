@@ -32,5 +32,8 @@ namespace Friendly.Database
         public DbSet<Block> Block { get; set; }
         public DbSet<Report> Report { get; set; }
         public DbSet<ReportReason> ReportReason { get; set; }
+        public DbSet<City> City { get; set; }
+        public DbSet<Country> Country { get; set; }
+
     }
 }
