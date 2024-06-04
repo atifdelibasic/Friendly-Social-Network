@@ -105,6 +105,8 @@ namespace Friendly.WebAPI
             services.AddSingleton<IConnectionService<string>, ConnectionService<string>>();
             services.AddScoped<IRecommenderService, RecommenderService>();
             services.AddSingleton<IMessageService, MessageService>();
+            services.AddScoped<ICityService, CityService>();
+            services.AddScoped<ICountryService, CountryService>();
         }
     }
 }
