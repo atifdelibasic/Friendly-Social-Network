@@ -16,7 +16,6 @@ namespace Friendly.Model.Requests.User
         public string LastName { get; set; }
 
         [DataType(DataType.Date)]
-        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime? BirthDate { get; set; }
 
         public DateTime DateModified { get; set; } = DateTime.UtcNow;
@@ -26,5 +25,6 @@ namespace Friendly.Model.Requests.User
         public string ImagePath { get; set; }
         public List<int> HobbyIds { get; set; }
         public string? Description { get; set; }
+        public int? CityId { get; set; }
     }
 }

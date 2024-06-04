@@ -281,6 +281,8 @@ namespace Friendly.Service
             user.LastName = request.LastName;
             user.BirthDate = request.BirthDate;
             user.Description = request.Description;
+            user.CityId = request.CityId;
+            
 
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
@@ -291,11 +293,6 @@ namespace Friendly.Service
                     Message = "Something went wrong"
                 };
             }
-
-            var updateUserHobbies = await AddHobby(new AddHobbyRequest
-            {
-                HobbyIds = request.HobbyIds
-            }, user.Id);
 
             return new UserManagerResponse
             {
