@@ -34,6 +34,7 @@ namespace Friendly.Database
         public DbSet<ReportReason> ReportReason { get; set; }
         public DbSet<City> City { get; set; }
         public DbSet<Country> Country { get; set; }
-
+        public DbSet<Notification> Notification { get; set; }
+        public DbSet<NotificationType> NotificationType { get; set; }
     }
 }
