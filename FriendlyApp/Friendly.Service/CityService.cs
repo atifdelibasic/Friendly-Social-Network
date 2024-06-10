@@ -21,6 +21,11 @@ namespace Friendly.Service
                 query = query.Where(x => (x.Name).ToLower().Contains(search.Text));
             }
 
+            if(search.CountryId is not null)
+            {
+                query = query.Where(x => x.CountryId == search.CountryId);
+            }
+
             return base.AddFilter(query, search);
         }
 

@@ -4,6 +4,7 @@ using Friendly.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Friendly.Database.Migrations
 {
     [DbContext(typeof(FriendlyContext))]
-    partial class FriendlyContextModelSnapshot : ModelSnapshot
+    [Migration("20240609165353_add_rateapp")]
+    partial class add_rateapp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,7 +44,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("BlockerUserId");
 
-                    b.ToTable("Block", (string)null);
+                    b.ToTable("Block");
                 });
 
             modelBuilder.Entity("Friendly.Database.City", b =>
@@ -72,7 +74,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("City", (string)null);
+                    b.ToTable("City");
                 });
 
             modelBuilder.Entity("Friendly.Database.Comment", b =>
@@ -107,7 +109,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comment", (string)null);
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("Friendly.Database.Country", b =>
@@ -132,7 +134,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Country", (string)null);
+                    b.ToTable("Country");
                 });
 
             modelBuilder.Entity("Friendly.Database.Feedback", b =>
@@ -162,7 +164,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Feedback", (string)null);
+                    b.ToTable("Feedback");
                 });
 
             modelBuilder.Entity("Friendly.Database.Friendship", b =>
@@ -197,7 +199,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Friendship", (string)null);
+                    b.ToTable("Friendship");
                 });
 
             modelBuilder.Entity("Friendly.Database.Gender", b =>
@@ -219,7 +221,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Gender", (string)null);
+                    b.ToTable("Gender");
                 });
 
             modelBuilder.Entity("Friendly.Database.Hobby", b =>
@@ -251,7 +253,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("HobbyCategoryId");
 
-                    b.ToTable("Hobby", (string)null);
+                    b.ToTable("Hobby");
                 });
 
             modelBuilder.Entity("Friendly.Database.HobbyCategory", b =>
@@ -274,7 +276,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HobbyCategory", (string)null);
+                    b.ToTable("HobbyCategory");
                 });
 
             modelBuilder.Entity("Friendly.Database.Like", b =>
@@ -308,7 +310,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Like", (string)null);
+                    b.ToTable("Like");
                 });
 
             modelBuilder.Entity("Friendly.Database.Message", b =>
@@ -334,7 +336,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Message", (string)null);
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("Friendly.Database.Notification", b =>
@@ -379,7 +381,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Notification", (string)null);
+                    b.ToTable("Notification");
                 });
 
             modelBuilder.Entity("Friendly.Database.NotificationType", b =>
@@ -397,7 +399,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NotificationType", (string)null);
+                    b.ToTable("NotificationType");
                 });
 
             modelBuilder.Entity("Friendly.Database.Post", b =>
@@ -441,7 +443,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Post", (string)null);
+                    b.ToTable("Post");
                 });
 
             modelBuilder.Entity("Friendly.Database.RateApp", b =>
@@ -458,8 +460,8 @@ namespace Friendly.Database.Migrations
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Rating")
-                        .HasColumnType("float");
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
@@ -468,7 +470,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RateApp", (string)null);
+                    b.ToTable("RateApp");
                 });
 
             modelBuilder.Entity("Friendly.Database.Report", b =>
@@ -510,7 +512,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Report", (string)null);
+                    b.ToTable("Report");
                 });
 
             modelBuilder.Entity("Friendly.Database.ReportReason", b =>
@@ -526,7 +528,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ReportReason", (string)null);
+                    b.ToTable("ReportReason");
                 });
 
             modelBuilder.Entity("Friendly.Database.User", b =>
@@ -652,7 +654,7 @@ namespace Friendly.Database.Migrations
 
                     b.HasIndex("HobbyId");
 
-                    b.ToTable("UserHobbies", (string)null);
+                    b.ToTable("UserHobbies");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>

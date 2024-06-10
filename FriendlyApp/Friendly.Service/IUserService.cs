@@ -11,7 +11,7 @@ namespace Friendly.Service
         public Task<Model.UserManagerResponse> ConfirmEmailAsync(string userId, string token);
         public Task<Model.UserManagerResponse> ForgotPasswordAsync(string email);
         public Task<Model.UserManagerResponse> ResetpasswordAsync(ResetPasswordRequest model);
-        public Task<Model.UserManagerResponse> UpdateUser(int id, UpdateUserRequest request);
+        public Task<Model.User> UpdateUser(int id, UpdateUserRequest request);
         public Task<Model.UserManagerResponse> DeleteUser(int id);
         public Task<List<Model.User>> GetUsersCursor(SearchUserCursorRequest request);
         public Task<List<Model.Hobby>> GetUserHobbies(int id);

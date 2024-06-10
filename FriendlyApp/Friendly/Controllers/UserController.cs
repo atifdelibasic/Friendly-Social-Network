@@ -96,11 +96,6 @@ namespace Friendly.WebAPI.Controllers
 
             var result = await _userService.UpdateUser(id, request);
 
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result);
-            }
-
             return Ok(result);
         }
 

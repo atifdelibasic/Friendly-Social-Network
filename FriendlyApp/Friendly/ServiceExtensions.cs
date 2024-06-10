@@ -107,6 +107,10 @@ namespace Friendly.WebAPI
             services.AddSingleton<IMessageService, MessageService>();
             services.AddScoped<ICityService, CityService>();
             services.AddScoped<ICountryService, CountryService>();
+            services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<IRateAppService, RateAppService>();
+            services.AddScoped<IReportReasonService, ReportReasonService>();
+
         }
     }
 }

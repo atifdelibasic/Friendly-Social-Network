@@ -36,5 +36,9 @@ namespace Friendly.Database
         public DbSet<Country> Country { get; set; }
         public DbSet<Notification> Notification { get; set; }
         public DbSet<NotificationType> NotificationType { get; set; }
+        public DbSet<Feedback> Feedback { get; set; }
+        public DbSet<RateApp> RateApp { get; set; }
+
+
     }
 }

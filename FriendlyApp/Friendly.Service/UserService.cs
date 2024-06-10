@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -249,21 +250,32 @@ namespace Friendly.Service
             };
         }
 
-        public async Task<UserManagerResponse> UpdateUser(int id, UpdateUserRequest request)
+        static string TrimUrlPrefix(string url, string prefix)
+        {
+            // Check if the URL starts with the given prefix and remove it if it does
+            if (url.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                return url.Substring(prefix.Length);
+            }
+            return url;
+        }
+
+        public async Task<Model.User> UpdateUser(int id, UpdateUserRequest request)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
-
-            if (user is null)
+            if (!string.IsNullOrEmpty(request.ProfileImageUrl) && request.ProfileImageUrl.Contains("avatar"))
             {
-                return new UserManagerResponse
-                {
-                    IsSuccess = false,
-                    Message = "User not found."
-                };
+                request.ProfileImageUrl = null;
+            } else if(!string.IsNullOrEmpty(request.ProfileImageUrl))
+            {
+                user.ProfileImageUrl = TrimUrlPrefix(request.ProfileImageUrl, "https://localhost:7169/images/");
+
             }
 
 
-            if (!string.IsNullOrEmpty(request.ImagePath))
+
+
+            if ( !string.IsNullOrEmpty(request.ImagePath))
             {
                 byte[] imageBytes = Convert.FromBase64String(request.ImagePath);
 
@@ -273,32 +285,30 @@ namespace Friendly.Service
                 File.WriteAllBytes(path, imageBytes);
 
                 request.ImagePath = fileName;
+                user.ProfileImageUrl = request.ImagePath;
             }
 
-            user.ProfileImageUrl = request.ImagePath;
 
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.BirthDate = request.BirthDate;
             user.Description = request.Description;
             user.CityId = request.CityId;
+
+            await AddHobby(new AddHobbyRequest { HobbyIds = request.HobbyIds, }, user.Id);
             
 
             var result = await _userManager.UpdateAsync(user);
-            if (!result.Succeeded)
-            {
-                return new UserManagerResponse
-                {
-                    IsSuccess = false,
-                    Message = "Something went wrong"
-                };
-            }
 
-            return new UserManagerResponse
+            Model.User m = new Model.User
             {
-                IsSuccess = true,
-                Message = "User updated."
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Description = request.Description,
+                ProfileImageUrl = user.ProfileImageUrl
             };
+
+            return m;
         }
 
         public async Task<UserManagerResponse> DeleteUser(int id)
@@ -382,8 +392,17 @@ namespace Friendly.Service
         public async Task<List<Model.Hobby>> AddHobby(AddHobbyRequest request, int id)
         {
             var user = await _context.Users
-                .Include(u => u.UserHobbies)
-                .FirstOrDefaultAsync(u => u.Id == id);
+               .Include(u => u.UserHobbies)
+               .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (request.HobbyIds == null || request.HobbyIds.Count == 0)
+            {
+                // If HobbyIds is empty, remove all hobbies and return an empty list
+                user.UserHobbies.Clear();
+                await _context.SaveChangesAsync();
+
+                return new List<Model.Hobby>();
+            }
 
             // Remove hobbies that are not in the list
             var hobbiesToRemove = user.UserHobbies
