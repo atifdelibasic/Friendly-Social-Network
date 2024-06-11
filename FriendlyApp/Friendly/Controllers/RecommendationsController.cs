@@ -8,24 +8,24 @@ namespace Friendly.WebAPI.Controllers
     public class RecommendationsController : ControllerBase
     {
         private readonly IRecommenderService _recommenderService;
+        private readonly IHobbyService _hobbyService;
 
-        public RecommendationsController(IRecommenderService recommenderService)
+        public RecommendationsController(IRecommenderService recommenderService, IHobbyService hobbyService)
         {
             _recommenderService = recommenderService;
+            _hobbyService = hobbyService;
         }
 
 
         [HttpGet("predict")]
-        public IActionResult Predict(int userId, int hobbyId)
+        public async Task<IActionResult> Predict(int userId, int hobbyId)
         {
-            var recommended = _recommenderService.Predict(userId, hobbyId);
-            var result = new
-            {
-                UserId = userId,
-                HobbyId = hobbyId,
-                Recommended = recommended
-            };
-            return Ok(result);
+            
+            var recommended =  _recommenderService.GetRecommendedHobbiesForUser(userId);
+
+            var hobbies =await _hobbyService.GetHobbiesByIds(recommended);
+
+            return Ok(hobbies);
         }
     }
 }

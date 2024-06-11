@@ -12,8 +12,18 @@ namespace Friendly.WebAPI.Controllers
     [Authorize(Roles = "User,Admin")]
     public class ReportController : BaseCRUDController<Report, SearchReportRequest, CreateReportRequest, UpdateReportRequest>
     {
+        private readonly IReportService _reportService;
         public ReportController(IReportService service) : base(service)
         {
+            _reportService = service;
+        }
+
+        [HttpPost("seen")]
+        public async Task<IActionResult> MarkAsSeen([FromQuery]int id)
+        {
+            await _reportService.MarkAsSeen(id);
+
+            return Ok();
         }
     }
 }

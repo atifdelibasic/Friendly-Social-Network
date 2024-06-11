@@ -9,9 +9,18 @@ namespace Friendly.WebAPI.Controllers
     [Route("[controller]")]
     public class CityController : BaseCRUDController<Model.City, SearchCityRequest, CreateCityRequest, UpdateCityRequest>
     {
+        private readonly ICityService _cityService;
         public CityController(ICityService service) : base(service)
         {
+            _cityService = service;
+        }
 
+        [HttpPut("delete")]
+        public async Task<IActionResult> SoftDelete(int id, bool isDeleted)
+        {
+            await _cityService.SoftDelete(id, isDeleted);
+
+            return Ok();
         }
     }
 }

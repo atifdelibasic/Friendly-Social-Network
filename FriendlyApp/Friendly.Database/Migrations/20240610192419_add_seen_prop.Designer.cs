@@ -4,6 +4,7 @@ using Friendly.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Friendly.Database.Migrations
 {
     [DbContext(typeof(FriendlyContext))]
-    partial class FriendlyContextModelSnapshot : ModelSnapshot
+    [Migration("20240610192419_add_seen_prop")]
+    partial class add_seen_prop
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -362,6 +364,9 @@ namespace Friendly.Database.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<int>("NotificationTypeId")
+                        .HasColumnType("int");
+
                     b.Property<int>("RecipientId")
                         .HasColumnType("int");
 
@@ -370,11 +375,31 @@ namespace Friendly.Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("NotificationTypeId");
+
                     b.HasIndex("RecipientId");
 
                     b.HasIndex("SenderId");
 
                     b.ToTable("Notification");
+                });
+
+            modelBuilder.Entity("Friendly.Database.NotificationType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NotificationType");
                 });
 
             modelBuilder.Entity("Friendly.Database.Post", b =>
@@ -898,6 +923,12 @@ namespace Friendly.Database.Migrations
 
             modelBuilder.Entity("Friendly.Database.Notification", b =>
                 {
+                    b.HasOne("Friendly.Database.NotificationType", "NotificationType")
+                        .WithMany("Notifications")
+                        .HasForeignKey("NotificationTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Friendly.Database.User", "Recipient")
                         .WithMany()
                         .HasForeignKey("RecipientId")
@@ -909,6 +940,8 @@ namespace Friendly.Database.Migrations
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("NotificationType");
 
                     b.Navigation("Recipient");
 
@@ -1077,6 +1110,11 @@ namespace Friendly.Database.Migrations
             modelBuilder.Entity("Friendly.Database.HobbyCategory", b =>
                 {
                     b.Navigation("Hobbies");
+                });
+
+            modelBuilder.Entity("Friendly.Database.NotificationType", b =>
+                {
+                    b.Navigation("Notifications");
                 });
 
             modelBuilder.Entity("Friendly.Database.Post", b =>

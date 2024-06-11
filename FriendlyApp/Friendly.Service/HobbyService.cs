@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Friendly.Database;
 using Friendly.Model.Requests.Hobby;
+using Microsoft.EntityFrameworkCore;
 
 namespace Friendly.Service
 {
@@ -11,7 +11,16 @@ namespace Friendly.Service
 
         }
 
-        public override IQueryable<Hobby> AddFilter(IQueryable<Hobby> query, SearchHobbyRequest search = null)
+        public async Task<List<Model.Hobby>> GetHobbiesByIds(List<int> hobbyIds)
+        {
+            List<Database.Hobby> hobbies = await _context.Hobby
+                       .Where(h => hobbyIds.Contains(h.Id)).ToListAsync();
+                       
+
+            return _mapper.Map<List<Model.Hobby>>(hobbies);
+        }
+
+        public override IQueryable<Database.Hobby> AddFilter(IQueryable<Database.Hobby> query, SearchHobbyRequest search = null)
         {
             if (search.HobbyCategoryId != null)
             {

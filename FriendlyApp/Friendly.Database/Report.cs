@@ -8,6 +8,7 @@
         public int? CommentId { get; set; }
         public int ReportReasonId { get; set; }
         public string AdditionalComment { get; set; }
+        public bool Seen { get; set; }
 
         public virtual User User { get; set; }
         public virtual Post Post { get; set; }

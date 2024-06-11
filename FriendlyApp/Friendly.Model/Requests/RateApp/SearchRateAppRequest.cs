@@ -6,5 +6,6 @@ namespace Friendly.Model.Requests.RateApp
     {
         public double Rating { get; set; }
         public int UserId { get; set; }
+        public string Text { get; set; }
     }
 }

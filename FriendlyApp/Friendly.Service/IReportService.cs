@@ -6,5 +6,6 @@ namespace Friendly.Service
 {
     public interface IReportService: ICRUDService<Model.Report, SearchReportRequest, CreateReportRequest, UpdateReportRequest>
     {
+        Task MarkAsSeen(int id);
     }
 }

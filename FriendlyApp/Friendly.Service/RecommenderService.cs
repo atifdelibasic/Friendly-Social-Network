@@ -14,6 +14,8 @@ namespace Friendly.Service
         void TrainModel();
         bool IsModelTrained();
         bool Predict(int userId, int hobbyId);
+        List<int> GetRecommendedHobbiesForUser(int userId);
+
     }
     public class RecommenderService : IRecommenderService
     {
@@ -23,7 +25,7 @@ namespace Friendly.Service
         public RecommenderService()
         {
             _mlContext = new MLContext();
-            //_model = LoadModel();
+            TrainModel();
         }
 
 
@@ -31,7 +33,6 @@ namespace Friendly.Service
         {
             var (trainingData, _) = LoadData();
             _model = BuildAndTrainModel(_mlContext, trainingData);
-          //  SaveModel(_mlContext, _model);
         }
 
         public bool IsModelTrained()
@@ -41,26 +42,23 @@ namespace Friendly.Service
 
         public bool Predict(int userId, int hobbyId)
         {
-            Console.WriteLine("dosao ovdje");
             (IDataView training, IDataView test) = LoadData();
             ITransformer model = BuildAndTrainModel(_mlContext, training);
             EvaluateModel(_mlContext, test, model);
-            bool recommend = UseModelForSinglePrediction(_mlContext, model);
-
-            //SaveModel(_mlContext, training.Schema, model);
+            bool recommend = UseModelForSinglePrediction(_mlContext, model, userId, hobbyId);
 
             return recommend;
         }
 
-        static bool UseModelForSinglePrediction(MLContext mlContext, ITransformer model)
+        static bool UseModelForSinglePrediction(MLContext mlContext, ITransformer model, int userId, int hobbyId)
         {
             Console.WriteLine("=============== Making a prediction ===============");
             var predictionEngine = mlContext.Model.CreatePredictionEngine<UserHobbyInteraction, UserHobbyInteractionPrediction>(model);
-            var testInput = new UserHobbyInteraction { UserId = 1, HobbyId = 105 };
+            var testInput = new UserHobbyInteraction { UserId = userId, HobbyId = hobbyId };
 
             var userHobbyInteractionPrediction = predictionEngine.Predict(testInput);
 
-            if (Math.Round(userHobbyInteractionPrediction.Score, 1) > 0.5)
+            if (Math.Round(userHobbyInteractionPrediction.Score, 1) > 0.3)
             {
                 Console.WriteLine("Hobby " + testInput.HobbyId + " in category is recommended for user " + testInput.UserId);
                 return true;
@@ -94,6 +92,31 @@ namespace Friendly.Service
             var testDataView = _mlContext.Data.LoadFromTextFile<UserHobbyInteraction>(testDataPath, hasHeader: true, separatorChar: ',');
             return (trainingDataView, testDataView);
         }
+
+        public List<int> GetRecommendedHobbiesForUser(int userId)
+        {
+            List<int> recommendedHobbies = new List<int>();
+
+            if (_model == null)
+            {
+                Console.WriteLine("Model is not trained yet. Please train the model first.");
+                return recommendedHobbies;
+            }
+
+            int minHobbyId = 1; 
+            int maxHobbyId = 20; 
+
+            for (int hobbyId = minHobbyId; hobbyId <= maxHobbyId; hobbyId++)
+            {
+                if (Predict(userId, hobbyId))
+                {
+                    recommendedHobbies.Add(hobbyId);
+                }
+            }
+
+            return recommendedHobbies;
+        }
+
 
         private ITransformer BuildAndTrainModel(MLContext mlContext, IDataView trainingDataView)
         {

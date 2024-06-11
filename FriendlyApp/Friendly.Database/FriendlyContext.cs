@@ -16,6 +16,7 @@ namespace Friendly.Database
             modelBuilder.Entity<Friendship>().HasQueryFilter(x => x.DeletedAt == null);
             modelBuilder.Entity<Post>().HasQueryFilter(x => x.DeletedAt == null);
             modelBuilder.Entity<Comment>().HasQueryFilter(x => x.DeletedAt == null);
+            modelBuilder.Entity<Report>().HasQueryFilter(report => report.Post.DeletedAt == null);
 
             base.OnModelCreating(modelBuilder);
         }
@@ -35,10 +36,7 @@ namespace Friendly.Database
         public DbSet<City> City { get; set; }
         public DbSet<Country> Country { get; set; }
         public DbSet<Notification> Notification { get; set; }
-        public DbSet<NotificationType> NotificationType { get; set; }
         public DbSet<Feedback> Feedback { get; set; }
         public DbSet<RateApp> RateApp { get; set; }
-
-
     }
 }

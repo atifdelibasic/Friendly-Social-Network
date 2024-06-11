@@ -26,6 +26,9 @@ namespace Friendly.Service
                 query = query.Where(x => x.CountryId == search.CountryId);
             }
 
+            query = query.OrderByDescending(x => x.DateCreated);
+
+
             return base.AddFilter(query, search);
         }
 
@@ -37,5 +40,19 @@ namespace Friendly.Service
             return base.AddInclude(query, search);
         }
 
+        public async Task SoftDelete(int id, bool isDeleted)
+        {
+            City city = await _context.City.FindAsync(id);
+            if(isDeleted)
+            {
+                city.DeletedAt = DateTime.Now;
+            }
+            else
+            {
+                city.DeletedAt = null;
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

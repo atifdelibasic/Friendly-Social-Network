@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Friendly.Database;
 using Friendly.Model.Requests.Country;
 using Friendly.Model.SearchObjects;
 
@@ -18,8 +19,24 @@ namespace Friendly.Service
                 string searchTextLower = search.Text.ToLower();
                 query = query.Where(x => (x.Name).ToLower().Contains(search.Text));
             }
+            query = query.OrderByDescending(x => x.DateCreated);
 
             return base.AddFilter(query, search);
+        }
+
+        public async Task SoftDelete(int id, bool isDeleted)
+        {
+            Country city = await _context.Country.FindAsync(id);
+            if (isDeleted)
+            {
+                city.DeletedAt = DateTime.Now;
+            }
+            else
+            {
+                city.DeletedAt = null;
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

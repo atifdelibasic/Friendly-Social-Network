@@ -10,6 +10,8 @@ namespace Friendly.WebAPI.Mapping
             CreateMap<CreateHobbyRequest, Database.Hobby>();
             CreateMap<UpdateHobbyRequest, Database.Hobby>();
             CreateMap<Database.Hobby, Model.Hobby>();
+            CreateMap<Model.Hobby, Database.Hobby>();
+
         }
     }
 }

@@ -10,5 +10,7 @@ namespace Friendly.Model
         public virtual Post Post { get; set; }
         public virtual Comment Comment { get; set; }
         public virtual ReportReason ReportReason { get; set; }
+        public DateTime DateCreated { get; set; }
+        public bool Seen { get; set; }
     }
 }

@@ -14,10 +14,6 @@ namespace Friendly.Database
 
         public bool IsRead { get; set; }
 
-        [ForeignKey("NotificationType")]
-        public int NotificationTypeId { get; set; }
-
-        public NotificationType NotificationType { get; set; }
         [ForeignKey("Recipient")]
         public int RecipientId { get; set; }
 

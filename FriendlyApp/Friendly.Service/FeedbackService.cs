@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Friendly.Model.Requests.Feedback;
-using Friendly.Model.Requests.RateApp;
+using Microsoft.EntityFrameworkCore;
 
 namespace Friendly.Service
 {
@@ -10,6 +10,21 @@ namespace Friendly.Service
         public FeedbackService(Database.FriendlyContext context, IMapper mapper) : base(context, mapper)
         {
 
+        }
+
+        public override IQueryable<Database.Feedback> AddFilter(IQueryable<Database.Feedback> query, SearchFeedbackRequest search = null)
+        {
+            if (!string.IsNullOrEmpty(search.Text))
+            {
+                string searchTextLower = search.Text.ToLower();
+                query = query.Where(x => x.Text.ToLower().Contains(searchTextLower));
+            }
+
+            query = query.Include(x => x.User).Include(x => x.User);
+            query = query.OrderByDescending(x => x.DateCreated);
+
+
+            return base.AddFilter(query, search);
         }
     }
 }

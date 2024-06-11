@@ -10,12 +10,16 @@ namespace Friendly.Service
         private readonly IMapper _mapper;
         private readonly FriendlyContext _context;
         private readonly HttpAccessorHelperService _httpAccessorHelper;
+        private readonly INotificationService _notificationService;
+        private readonly IPostService _postService;
 
-        public LikeService(FriendlyContext context, IMapper mapper, HttpAccessorHelperService httpAccessorHelper)
+        public LikeService(FriendlyContext context, IMapper mapper, HttpAccessorHelperService httpAccessorHelper, IPostService postService, INotificationService notificationService)
         {
             _mapper = mapper;
             _context = context;
             _httpAccessorHelper = httpAccessorHelper;
+            _notificationService = notificationService;
+            _postService = postService;
         }
 
         public async Task<List<Model.Like>> GetLikes(SearchLikesRequest search)
@@ -49,6 +53,14 @@ namespace Friendly.Service
                 await DeleteLike(like);
                 return _mapper.Map<Model.Like>(like);
             }
+
+            Model.Post post = await _postService.GetById(request.PostId);
+            await _notificationService.CreateNotification(new Model.Requests.Notification.CreateNotificationRequest
+            {
+                SenderId = userId,
+                RecipientId = post.UserId,
+                Message = "Liked your post "
+            });
 
             Database.Like entity = new Database.Like { UserId = userId };
 
