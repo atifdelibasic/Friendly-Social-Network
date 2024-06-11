@@ -1,6 +1,4 @@
 ﻿using Friendly.Database;
-using Friendly.Service;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +17,9 @@ namespace Friendly.WebAPI
                     ImagePath = "running-track.jpg",
                     UserId = userId,
                     HobbyId = 7,
-                    Description = "Neko za trcanje u sjevernom, vrijeme 06:00? "
+                    Description = "Neko za trcanje u sjevernom, vrijeme 06:00? ",
+                    Latitude = 44.128014,
+                    Longitude = 18.117826
                 },
                     new Post
                 {
@@ -29,6 +29,8 @@ namespace Friendly.WebAPI
                     Description = "Basket danas u 15:00 poligon kod sahat kule.",
                     DateCreated = RandomDay(),
                     ImagePath = "basketball.jpg",
+                    Latitude = 44.128014,
+                    Longitude = 18.117826
                     },
 
                       new Post
@@ -39,6 +41,8 @@ namespace Friendly.WebAPI
                     Description = "Kickbox training today at 13:00, aynone interested? Please like this post at least an hour before the training. Bring your gear there's gona be spar.",
                     DateCreated = RandomDay(),
                     ImagePath = "kickbox.jpg",
+                    Latitude = 44.128014,
+                    Longitude = 18.117826
                     },
                         new Post
                 {
@@ -48,6 +52,8 @@ namespace Friendly.WebAPI
                     Description = "I am new in town is there a gym to recommend (student's price) and leave a like if you are interested in training w me. Thx :D ",
                     DateCreated = RandomDay(),
                     ImagePath = "gym.jpg",
+                    Latitude = 44.128014,
+                    Longitude = 18.117826
 
                     },
                           new Post
@@ -58,6 +64,8 @@ namespace Friendly.WebAPI
                     Description = "Looking for fellow gamers to join me in an epic Dungeons & Dragons campaign. Beginners welcome!",
                     DateCreated = RandomDay(),
                     ImagePath = "gaming.jpg",
+                    Latitude = 44.128014,
+                    Longitude = 18.117826
 
 
                     },   new Post
@@ -68,6 +76,8 @@ namespace Friendly.WebAPI
                     Description = "Photography enthusiasts, let's explore the city and capture some stunning shots at golden hour tomorrow evening.",
                     DateCreated = RandomDay(),
                     ImagePath = "photography.jpg",
+                    Latitude = 44.128014,
+                    Longitude = 18.117826
 
                     },
                             new Post
@@ -78,6 +88,8 @@ namespace Friendly.WebAPI
                     DateCreated = RandomDay(),
                     Description = "Calling all collectors! Let's organize a swap meet to exchange and showcase our treasures. Reply if interested!",
                     ImagePath = "collecting.jpg",
+                    Latitude = 44.128014,
+                    Longitude = 18.117826
 
                     }
             };
@@ -90,13 +102,76 @@ namespace Friendly.WebAPI
             int range = (DateTime.Today - start).Days;
             return start.AddDays(gen.Next(range));
         }
-        public static async Task Initialize(FriendlyContext dbContext, IServiceProvider services )
+        public static async Task Initialize(FriendlyContext dbContext, IServiceProvider services)
         {
 
-            Console.WriteLine("ovjde sam pocni seed bazu");
-            Console.WriteLine("ovjde sam pocni seed bazu");
-            Console.WriteLine("ovjde sam pocni seed bazu");
-            Console.WriteLine("ovjde sam pocni seed bazu");
+            if (!dbContext.ReportReason.Any())
+            {
+                await dbContext.ReportReason.AddRangeAsync(
+                new ReportReason
+                {
+                    Description = "Spam"
+                },
+                new ReportReason
+                {
+                    Description = "Hate speech"
+                },
+                 new ReportReason
+                 {
+                     Description = "Abuse"
+                 }
+                    );
+                await dbContext.SaveChangesAsync();
+            }
+
+            if (!dbContext.Country.Any())
+            {
+                await dbContext.AddRangeAsync(new Country
+                {
+                    Name = "Bosnia and Herzegovina"
+                }, new Country
+                {
+                    Name = "Croatia"
+                },
+                new Country
+                {
+                    Name = "Serbia"
+                },
+                new Country
+                {
+                    Name = "Montenegro"
+                }
+                );
+
+                await dbContext.SaveChangesAsync();
+            }
+
+            if (!dbContext.City.Any())
+            {
+
+                dbContext.AddRange(new City
+                {
+                    Name = "Kakanj",
+                    CountryId = 1,
+                }, new City
+                {
+                    Name = "Sarajevo",
+                    CountryId = 1,
+
+                },
+               new City
+               {
+                   CountryId = 1,
+                   Name = "Mostar"
+               },
+               new City
+               {
+                   Name = "Banja Luka",
+                   CountryId = 1,
+               }
+               );
+            }
+
 
             if (!dbContext.Roles.Any())
             {
@@ -111,9 +186,9 @@ namespace Friendly.WebAPI
                     NormalizedName = "USER",
                 }
                 );
-               await  dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
             }
-        
+
 
             Database.User user1 = new Database.User
             {
@@ -124,7 +199,8 @@ namespace Friendly.WebAPI
                 Description = "I love programming",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-                ProfileImageUrl="atif.jpg"
+                ProfileImageUrl = "atif.jpg",
+                BirthDate = DateTime.Now
             };
 
             if (!dbContext.Users.Any())
@@ -152,9 +228,10 @@ namespace Friendly.WebAPI
                         LastName = lastNames[i % lastNames.Length],
                         Email = $"{firstNames[i % firstNames.Length].ToLower()}.{lastNames[i % lastNames.Length].ToLower()}@example.com",
                         UserName = $"{firstNames[i % firstNames.Length].ToLower()}.{lastNames[i % lastNames.Length].ToLower()}@example.com",
-                        Description = $"This is user {i + 1}",
+                        Description = $"This is user {i + 1} description",
                         EmailConfirmed = true,
-                        PhoneNumberConfirmed = true
+                        PhoneNumberConfirmed = true,
+                        BirthDate = DateTime.Now
                     };
 
                     var res = await userManager.CreateAsync(user, "Lozinka123!");
@@ -162,19 +239,29 @@ namespace Friendly.WebAPI
                     {
                         await userManager.AddToRoleAsync(user, "User");
                     }
+
+                    await dbContext.Feedback.AddAsync(new Feedback
+                    {
+                        UserId = user.Id,
+                        Text = "This is a feedback message."
+                    });
+
+                    await dbContext.RateApp.AddAsync(new RateApp
+                    {
+                        UserId = user.Id,
+                        Rating = gen.Next(1, 5),
+                    });
                 }
-
+                await dbContext.SaveChangesAsync();
             }
-
-
 
             if (!dbContext.UserRoles.Any())
             {
                 dbContext.UserRoles.Add(new Microsoft.AspNetCore.Identity.IdentityUserRole<int>
                 {
-                  UserId = 1,
-                  RoleId = 1,
-                  
+                    UserId = 1,
+                    RoleId = 1,
+
                 });
 
                 await dbContext.SaveChangesAsync();
@@ -239,7 +326,7 @@ namespace Friendly.WebAPI
                     int i = 0;
                     foreach (var hobby in hobbies)
                     {
-                        if(i == 5)
+                        if (i == 5)
                         {
                             break;
                         }
@@ -250,13 +337,13 @@ namespace Friendly.WebAPI
                         };
                         i++;
 
-                       await  dbContext.AddAsync(userHobby);
+                        await dbContext.AddAsync(userHobby);
                     }
                 }
                 await dbContext.SaveChangesAsync();
             }
 
-            if(!dbContext.Post.Any())
+            if (!dbContext.Post.Any())
             {
 
                 List<User> users = await dbContext.Users.ToListAsync();
@@ -265,20 +352,41 @@ namespace Friendly.WebAPI
                     await dbContext.AddRangeAsync(GetPosts(user.Id));
                 }
 
-               await dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
 
                 List<Post> posts = await dbContext.Post.ToListAsync();
                 Random r = new Random();
                 foreach (var post in posts)
                 {
+                    if(post.UserId != 1 && (post.Id > 1 && post.Id < 25))
+                    {
+                        await dbContext.AddAsync(new Report
+                        {
+                            PostId = post.Id,
+                            ReportReasonId = gen.Next(1, 2),
+                            UserId = 1,
+                            AdditionalComment = "This post is offensive"
+                        }
+                             );
+                    }
+                  
+                        
                     for (int i = 0; i < 5; i++)
                     {
                         int userId = r.Next(1, 10);
+                     
 
                         Like like = new Like
                         {
                             UserId = userId,
                             PostId = post.Id
+                        };
+
+                        Notification n = new Notification
+                        {
+                            RecipientId = userId,
+                            SenderId = r.Next(2, 10),
+                            Message = "Liked your post"
                         };
 
                         Comment comment = new Comment
@@ -290,6 +398,7 @@ namespace Friendly.WebAPI
 
                         await dbContext.AddAsync(like);
                         await dbContext.AddAsync(comment);
+                        await dbContext.AddAsync(n);
                     }
                 }
 
@@ -297,7 +406,7 @@ namespace Friendly.WebAPI
 
             }
 
-            if(!dbContext.Friendship.Any())
+            if (!dbContext.Friendship.Any())
             {
                 for (int i = 0; i < 5; i++)
                 {
@@ -305,7 +414,7 @@ namespace Friendly.WebAPI
                     {
                         UserId = 1,
                         FriendId = i + 1,
-                        Status = FriendshipStatus.Friends   
+                        Status = FriendshipStatus.Friends
                     };
 
                     await dbContext.AddAsync(friendship);
@@ -318,7 +427,7 @@ namespace Friendly.WebAPI
 
 
         }
-   
+
     }
 
 }

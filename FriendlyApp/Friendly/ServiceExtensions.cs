@@ -111,6 +111,8 @@ namespace Friendly.WebAPI
             services.AddScoped<IRateAppService, RateAppService>();
             services.AddScoped<IReportReasonService, ReportReasonService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IStatsDashboardService, StatsDashboardService>();
+
 
         }
     }

@@ -14,10 +14,6 @@ namespace Friendly.Database
         public DateTime? DeletedAt { get; set; }
 
         public IList<UserHobby> UserHobbies { get; set; }
-
-        public virtual int? GenderId { get; set; }
-        public virtual Gender Gender { get; set; }
-
         public string Description { get; set; }
         public virtual int? CityId { get; set; }
         public virtual City City { get; set; }

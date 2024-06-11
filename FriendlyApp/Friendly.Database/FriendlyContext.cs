@@ -17,6 +17,8 @@ namespace Friendly.Database
             modelBuilder.Entity<Post>().HasQueryFilter(x => x.DeletedAt == null);
             modelBuilder.Entity<Comment>().HasQueryFilter(x => x.DeletedAt == null);
             modelBuilder.Entity<Report>().HasQueryFilter(report => report.Post.DeletedAt == null);
+            modelBuilder.Entity<User>().HasQueryFilter(user => user.DeletedAt == null);
+
 
             base.OnModelCreating(modelBuilder);
         }
@@ -24,7 +26,6 @@ namespace Friendly.Database
         public DbSet<Hobby> Hobby { get; set; }
         public DbSet<HobbyCategory> HobbyCategory { get; set; }
         public DbSet<UserHobby> UserHobbies { get; set; }
-        public DbSet<Gender> Gender { get; set; }
         public DbSet<Post> Post { get; set; }
         public DbSet<Friendship> Friendship { get; set; }
         public DbSet<Comment> Comment { get; set; }

@@ -43,8 +43,15 @@ namespace Friendly.Service
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
-                var createdUser = _userManager.FindByEmailAsync(user.Email);
-                var role = _userManager.AddToRoleAsync(user, "User");
+                var createdUser = await _userManager.FindByEmailAsync(user.Email);
+                var role = await _userManager.AddToRoleAsync(user, "User");
+                if (role.Succeeded)
+                {
+                    Console.WriteLine("add role");
+                } else
+                {
+                    Console.WriteLine("something went wrong");
+                }
 
                 //var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
@@ -54,7 +61,7 @@ namespace Friendly.Service
                 //string url = $"{_configuration["AppUrl"]}/user/confirmemail?userId={user.Id}&token={validEmailToken}";
 
                 // Send an Email confirmation 
-               // var jobId = BackgroundJob.Enqueue(() => _emailService.SendEmailAsync(user.Email, "Confirm your Email", $"<a href='{url}'>Click here to confirm your Email.</a>"));
+                // var jobId = BackgroundJob.Enqueue(() => _emailService.SendEmailAsync(user.Email, "Confirm your Email", $"<a href='{url}'>Click here to confirm your Email.</a>"));
 
                 return new UserManagerResponse
                 {
@@ -136,7 +143,7 @@ namespace Friendly.Service
                 issuer: _configuration["AuthSettings:ValidIssuer"],
                 audience: _configuration["AuthSettings:ValidAudience"],
                 claims: claims,
-                //expires: DateTime.Now.AddDays(5),
+                expires: DateTime.MaxValue,
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
 
             string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
@@ -250,12 +257,15 @@ namespace Friendly.Service
             };
         }
 
-        static string TrimUrlPrefix(string url, string prefix)
+        public static string TrimUrlPrefix(string url, string prefixHttps, string prefixHttp)
         {
-            // Check if the URL starts with the given prefix and remove it if it does
-            if (url.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            if (url.StartsWith(prefixHttps))
             {
-                return url.Substring(prefix.Length);
+                return url.Substring(prefixHttps.Length);
+            }
+            else if (url.StartsWith(prefixHttp))
+            {
+                return url.Substring(prefixHttp.Length);
             }
             return url;
         }
@@ -266,16 +276,13 @@ namespace Friendly.Service
             if (!string.IsNullOrEmpty(request.ProfileImageUrl) && request.ProfileImageUrl.Contains("avatar"))
             {
                 request.ProfileImageUrl = null;
+                user.ProfileImageUrl = "";
             } else if(!string.IsNullOrEmpty(request.ProfileImageUrl))
             {
-                user.ProfileImageUrl = TrimUrlPrefix(request.ProfileImageUrl, "https://localhost:7169/images/");
-
+                user.ProfileImageUrl = TrimUrlPrefix(request.ProfileImageUrl, "https://localhost:7169/images/", "http://localhost:7169/images/");
             }
 
-
-
-
-            if ( !string.IsNullOrEmpty(request.ImagePath))
+            if (!string.IsNullOrEmpty(request.ImagePath))
             {
                 byte[] imageBytes = Convert.FromBase64String(request.ImagePath);
 
@@ -286,7 +293,7 @@ namespace Friendly.Service
 
                 request.ImagePath = fileName;
                 user.ProfileImageUrl = request.ImagePath;
-            }
+            } 
 
 
             user.FirstName = request.FirstName;
@@ -324,18 +331,9 @@ namespace Friendly.Service
                 };
             }
 
-            // Soft deleting user
-            user.DeletedAt = DateTime.UtcNow;
+            user.DeletedAt = DateTime.Now;
 
-            var result = await _userManager.UpdateAsync(user);
-            if (!result.Succeeded)
-            {
-                return new UserManagerResponse
-                {
-                    IsSuccess = false,
-                    Message = "Something went wrong"
-                };
-            }
+            await _context.SaveChangesAsync();
 
             return new UserManagerResponse
             {

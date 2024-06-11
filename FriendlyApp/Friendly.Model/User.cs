@@ -9,6 +9,8 @@ namespace Friendly.Model
         public string Email { get; set; }
         public string? ProfileImageUrl { get; set; }
         public DateTime BirthDate { get; set; }
+        public DateTime DeletedAt { get; set; }
+
         public string Description { get; set; }
     } 
 }
