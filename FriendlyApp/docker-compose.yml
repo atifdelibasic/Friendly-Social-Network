@@ -16,6 +16,18 @@ services:
     restart: unless-stopped
     build: .  # build the Docker image
     container_name: web_api_application
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=myuser
+      - RABBITMQ_PASS=mypass
+      - ConnectionStrings__DefaultConnection=Server=sql_server2022;Database=FriendlyApp;User=sa;Password=A&VeryComplex123Password;MultipleActiveResultSets=true
+      - Logging__LogLevel__Default=Information
+      - Logging__LogLevel__Microsoft.AspNetCore=Warning
+      - AuthSettings__ValidIssuer=http://freindly.app
+      - AuthSettings__ValidAudience=http://freindly.app
+      - AuthSettings__Key=zendev225883rs2seminarski!=?((ace&SecureK3y))
+      - AppUrl=https://localhost:7169
     ports:
       - "7169:80"
     depends_on:

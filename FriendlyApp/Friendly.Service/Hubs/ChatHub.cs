@@ -1,5 +1,4 @@
-﻿using Friendly.Database;
-using Friendly.Service;
+﻿using Friendly.Service;
 using Friendly.Service.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -9,9 +8,11 @@ using System.Text.RegularExpressions;
 public class ChatHub : Hub<IChatHubClient>
 {
     private readonly IConnectionService<string> _connectionService;
+    private readonly IChatService _chatService;
 
-    public ChatHub(IConnectionService<string> connectionService)
+    public ChatHub(IConnectionService<string> connectionService, IChatService chatService)
     {
+        _chatService = chatService;
         _connectionService = connectionService;
     }
 
@@ -19,16 +20,24 @@ public class ChatHub : Hub<IChatHubClient>
     {
         var senderId = Context.User.FindFirst("userid").Value.ToString();
         var recipientId = Context.GetHttpContext().Request.Query["recipient_id"];
+        await _chatService.StoreMessage(new Friendly.Model.Requests.Message.CreateMessageRequest
+        {
+            RecipientId = int.Parse(recipientId),
+            SenderId = int.Parse(senderId),
+            Content = message
+        });
 
         string key = recipientId + "_" + senderId;
 
 
         var connections = _connectionService.GetConnections(key);
 
-       
+
         if (!string.IsNullOrEmpty(message.Trim()))
         {
             string filteredMessage = Regex.Replace(message, @"<.*?>", string.Empty);
+
+
 
             if (connections is null || !connections.Any())
             {
@@ -60,7 +69,7 @@ public class ChatHub : Hub<IChatHubClient>
         var userId = Context.User.FindFirst("userid").Value.ToString();
         var recipientId = Context.GetHttpContext().Request.Query["recipient_id"];
 
-        _connectionService.RemoveConnection( userId + "_" + recipientId, Context.ConnectionId);
+        _connectionService.RemoveConnection(userId + "_" + recipientId, Context.ConnectionId);
 
         return base.OnDisconnectedAsync(exception);
     }

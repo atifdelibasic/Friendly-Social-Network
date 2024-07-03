@@ -3,6 +3,7 @@ using Friendly.Database;
 using Friendly.Model.Requests.City;
 using Friendly.Model.SearchObjects;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Friendly.Service
 {
@@ -38,6 +39,32 @@ namespace Friendly.Service
 
 
             return base.AddInclude(query, search);
+        }
+
+        public async Task<List<Model.City>> GetCities(SearchCityRequest search)
+        {
+            var query = _context.City.AsQueryable();
+
+            query = query.Where(x => x.DeletedAt == null);
+
+            if (!string.IsNullOrEmpty(search.Text))
+            {
+                string searchTextLower = search.Text.ToLower();
+                query = query.Where(x => x.Name.ToLower().Contains(searchTextLower));
+            }
+
+            if (search.CountryId.HasValue)
+            {
+                query = query.Where(x => x.CountryId == search.CountryId.Value);
+            }
+
+            query = query.OrderBy(x => x.Name)
+                         .AsNoTracking()
+                         .Include(x => x.Country);
+
+            var cities = await query.ToListAsync();
+
+            return _mapper.Map<List<Model.City>>(cities);
         }
 
         public async Task SoftDelete(int id, bool isDeleted)

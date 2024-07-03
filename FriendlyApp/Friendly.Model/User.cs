@@ -12,5 +12,10 @@ namespace Friendly.Model
         public DateTime DeletedAt { get; set; }
 
         public string Description { get; set; }
+        public City? City { get; set; }
+        public int? CountryId { get; set; }
+        public int? CityId { get; set; }
+        public List<string> Roles { get; set; }
+        public string DateCreated { get; set; }
     } 
 }

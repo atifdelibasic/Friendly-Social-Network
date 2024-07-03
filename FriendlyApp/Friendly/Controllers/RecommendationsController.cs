@@ -23,9 +23,9 @@ namespace Friendly.WebAPI.Controllers
             
             var recommended =  _recommenderService.GetRecommendedHobbiesForUser(userId);
 
-            var hobbies =await _hobbyService.GetHobbiesByIds(recommended);
+            //var hobbies =await _hobbyService.GetHobbiesByIds(recommended);
 
-            return Ok(hobbies);
+            return Ok(recommended);
         }
     }
 }

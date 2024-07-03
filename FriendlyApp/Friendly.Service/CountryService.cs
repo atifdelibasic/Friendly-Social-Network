@@ -2,6 +2,7 @@
 using Friendly.Database;
 using Friendly.Model.Requests.Country;
 using Friendly.Model.SearchObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace Friendly.Service
 {
@@ -37,6 +38,26 @@ namespace Friendly.Service
             }
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Model.Country>> GetCountries(SearchCountryObject search)
+        {
+            var query = _context.City.AsQueryable();
+            query = query.Where(x => x.DeletedAt == null);
+
+            if (!string.IsNullOrEmpty(search.Text))
+            {
+                string searchTextLower = search.Text.ToLower();
+                query = query.Where(x => x.Name.ToLower().Contains(searchTextLower));
+            }
+
+            query = query.OrderBy(x => x.Name)
+                         .AsNoTracking()
+                         .Include(x => x.Country);
+
+            var cities = await query.ToListAsync();
+
+            return _mapper.Map<List<Model.Country>>(cities);
         }
     }
 }

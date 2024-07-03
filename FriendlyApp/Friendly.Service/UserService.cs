@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using publisher_api.Services;
 using System;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
@@ -25,13 +26,15 @@ namespace Friendly.Service
         private IConfiguration _configuration;
         private IEmailService _emailService;
         private readonly IMapper _mapper;
+        private readonly IMessageService _messageService;
 
-        public UserService(Database.FriendlyContext context, UserManager<Database.User> userManager, IConfiguration configuration, IEmailService emailservice, IMapper mapper) : base(context, mapper)
+        public UserService(Database.FriendlyContext context, UserManager<Database.User> userManager, IConfiguration configuration, IEmailService emailservice, IMapper mapper, IMessageService service) : base(context, mapper)
         {
             _userManager = userManager;
             _configuration = configuration;
             _emailService = emailservice;
             _mapper = mapper;
+            _messageService = service;
         }
 
         public async Task<UserManagerResponse> RegisterUserAsync(UserRegisterRequest request)
@@ -45,13 +48,9 @@ namespace Friendly.Service
             {
                 var createdUser = await _userManager.FindByEmailAsync(user.Email);
                 var role = await _userManager.AddToRoleAsync(user, "User");
-                if (role.Succeeded)
-                {
-                    Console.WriteLine("add role");
-                } else
-                {
-                    Console.WriteLine("something went wrong");
-                }
+             
+
+                _messageService.UserRegisterMessage("New user registered: " + user.FirstName +  " " + user.LastName);
 
                 //var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
@@ -121,8 +120,6 @@ namespace Friendly.Service
                 };
             }
 
-
-            // Get user roles
             var roles = await _userManager.GetRolesAsync(user);
 
             List<Claim> claims = new List<Claim>();
@@ -148,12 +145,18 @@ namespace Friendly.Service
 
             string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
 
+            var u = await _context.Users.Include(x => x.City).FirstOrDefaultAsync(x => x.Email == request.Email);
+
+            Model.User userModel = _mapper.Map<Model.User>(u);
+            userModel.CountryId = u.City?.CountryId;
+            userModel.Roles = roles.ToList();
+
             return new UserManagerResponse
             {
                 Message = tokenAsString,
                 IsSuccess = true,
-                User = _mapper.Map<Model.User>(user)
-        };
+                User = userModel
+            };
         }
 
         public async Task<UserManagerResponse> ConfirmEmailAsync(string userId, string token)
@@ -395,14 +398,12 @@ namespace Friendly.Service
 
             if (request.HobbyIds == null || request.HobbyIds.Count == 0)
             {
-                // If HobbyIds is empty, remove all hobbies and return an empty list
                 user.UserHobbies.Clear();
                 await _context.SaveChangesAsync();
 
                 return new List<Model.Hobby>();
             }
 
-            // Remove hobbies that are not in the list
             var hobbiesToRemove = user.UserHobbies
                 .Where(uh => !request.HobbyIds.Contains(uh.HobbyId))
                 .ToList();
@@ -412,7 +413,6 @@ namespace Friendly.Service
                 user.UserHobbies.Remove(hobbyToRemove);
             }
 
-            // Add/create hobbies from the list that do not exist
             var hobbiesToAddIds = request.HobbyIds
                 .Where(hId => !user.UserHobbies.Any(uh => uh.HobbyId == hId))
                 .ToList();
@@ -432,6 +432,5 @@ namespace Friendly.Service
 
             return _mapper.Map<List<Model.Hobby>>(userHobbies);
         }
-
     }
 }

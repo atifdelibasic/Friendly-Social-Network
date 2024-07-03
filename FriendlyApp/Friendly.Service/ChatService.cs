@@ -19,27 +19,38 @@ namespace Friendly.Service
             _mapper = mapper;
         }
 
-        public async Task<List<Model.Message>> Get(SearchMessagesRequest request)
+        public async Task<List<Model.Message>> Get(SearchMessageRequest request)
         {
             int userId = _httpAccessorHelper.GetUserId();
+            int recipientId = request.RecipientId;
 
-            var query = _context.Message.Where(x => x.SenderId == userId && x.RecipientId == request.UserId);
+            var query1 = _context.Message
+                .Where(x => x.SenderId == userId && x.RecipientId == recipientId);
+
+            var query2 = _context.Message
+                .Where(x => x.SenderId == recipientId && x.RecipientId == userId);
+
+            var query = query1.Union(query2);
 
             if (request.Cursor.HasValue)
             {
                 query = query.Where(x => x.Id < request.Cursor);
             }
 
-            query = query
-               .OrderBy(x => x.Id)
-               .Take(request.Limit);
+            query = query.OrderByDescending(x => x.Id);
+
+            if (request.Limit != 0)
+            {
+                query = query.Take(request.Limit);
+            }
 
             var messages = await query.ToListAsync();
 
             return _mapper.Map<List<Model.Message>>(messages);
         }
 
-        public async Task<Model.Message> StoreMessage(SendMessageRequest request)
+
+        public async Task<Model.Message> StoreMessage(CreateMessageRequest request)
         {
             int userId = _httpAccessorHelper.GetUserId();
             var set = _context.Set<Database.Message>();

@@ -9,6 +9,7 @@ namespace Friendly.Model
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
         public DateTime? DeletedAt { get; set; }
+        public int CountryId { get; set; }
 
     }
 }

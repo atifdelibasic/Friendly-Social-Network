@@ -5,7 +5,7 @@ namespace Friendly.Service
 {
     public interface IChatService
     {
-        public Task<Model.Message> StoreMessage(SendMessageRequest request);
-        public Task<List<Model.Message>> Get(SearchMessagesRequest request);
+        public Task<Model.Message> StoreMessage(CreateMessageRequest request);
+        public Task<List<Model.Message>> Get(SearchMessageRequest request);
     }
 }

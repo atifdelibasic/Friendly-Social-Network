@@ -7,6 +7,6 @@ namespace Friendly.Service
     public interface ICountryService : ICRUDService<Model.Country, SearchCountryObject, CreateCountryRequest, UpdateCountryRequest>
     {
         Task SoftDelete(int cityId, bool isDeleted);
-
+        Task<List<Model.Country>> GetCountries(SearchCountryObject request);
     }
 }

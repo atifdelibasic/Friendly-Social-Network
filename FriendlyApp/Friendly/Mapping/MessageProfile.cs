@@ -7,7 +7,7 @@ namespace Friendly.WebAPI.Mapping
     {
         public MessageProfile()
         {
-            CreateMap<SendMessageRequest, Database.Message>();
+            CreateMap<CreateMessageRequest, Database.Message>();
             CreateMap<Database.Message, Model.Message>();
         }
     }

@@ -1,11 +1,13 @@
 ﻿using Friendly.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Friendly.WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-   // [Authorize(Roles = "User")]
+    [Authorize]
+
     public class ProfilesController : ControllerBase
     {
         private readonly IFriendshipService _friendshipService;

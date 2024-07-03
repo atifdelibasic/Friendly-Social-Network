@@ -36,5 +36,13 @@ namespace Friendly.Service
            
             return base.AddFilter(query, search);
         }
+
+        public async Task DeleteHobby(int id)
+        {
+            var hobby = await getById(id);
+            hobby.DeletedAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

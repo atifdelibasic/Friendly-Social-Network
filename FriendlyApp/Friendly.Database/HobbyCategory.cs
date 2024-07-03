@@ -2,7 +2,7 @@
 
 namespace Friendly.Database
 {
-    public class HobbyCategory : BaseEntity
+    public class HobbyCategory : SoftDelete
     {
         [Key]
         public int Id { get; set; }

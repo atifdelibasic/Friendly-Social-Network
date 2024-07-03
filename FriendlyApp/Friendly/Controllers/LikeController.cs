@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Friendly.Service;
 using Friendly.Model.Requests.Like;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Friendly.WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class LikeController: ControllerBase
     {
         private readonly ILikeService _service;

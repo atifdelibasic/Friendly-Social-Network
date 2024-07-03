@@ -4,7 +4,7 @@ using Friendly.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-[Authorize(Roles = "User,Admin")]
+[Authorize]
 [Route("[controller]")]
 [ApiController]
 public class ChatController : ControllerBase
@@ -18,7 +18,7 @@ public class ChatController : ControllerBase
 
     [HttpPost]
     [Route("store")]
-    public async Task<IActionResult> StoreMessage(SendMessageRequest request)
+    public async Task<IActionResult> StoreMessage(CreateMessageRequest request)
     {
        var result = await _chatService.StoreMessage(request);
 
@@ -26,7 +26,7 @@ public class ChatController : ControllerBase
     } 
 
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery]SearchMessagesRequest request) {
+    public async Task<IActionResult> Get([FromQuery]SearchMessageRequest request) {
 
         var result = await _chatService.Get(request);
 

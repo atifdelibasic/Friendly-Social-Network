@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Friendly.Database
 {
-    public class Message
+    public class Message : SoftDelete
     {
         [Key]
         public int Id { get; set; }

@@ -4,7 +4,7 @@ using Friendly.Model.Requests.HobbyCategory;
 
 namespace Friendly.Service
 {
-    public class HobbyCategoryService: BaseCRUDService<Model.HobbyCategory, Database.HobbyCategory, SearchHobbyCategoryRequest, CreateHobbyCategoryRequest, UpdateHobbyCategoryRequest>, IHobbyCategoryService
+    public class HobbyCategoryService : BaseCRUDService<Model.HobbyCategory, Database.HobbyCategory, SearchHobbyCategoryRequest, CreateHobbyCategoryRequest, UpdateHobbyCategoryRequest>, IHobbyCategoryService
     {
         public HobbyCategoryService(Database.FriendlyContext context, IMapper mapper) : base(context, mapper)
         {
@@ -20,6 +20,15 @@ namespace Friendly.Service
             }
 
             return base.AddFilter(query, search);
+        }
+
+        public async Task DeleteHobbyCategory(int id)
+        {
+            var hobbyCategory = await getById(id);
+
+            hobbyCategory.DeletedAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
         }
     }
 }

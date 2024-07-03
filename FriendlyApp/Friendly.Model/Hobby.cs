@@ -7,5 +7,7 @@ namespace Friendly.Model
         public string Title { get; set; }
         public string Description { get; set; }
         public virtual int HobbyCategoryId { get; set; }
+        public string DeletedAt { get; set; }
+        public string DateCreated { get; set; }
     }
 }
