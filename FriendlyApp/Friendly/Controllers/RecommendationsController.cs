@@ -1,10 +1,12 @@
 ﻿using Friendly.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Friendly.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RecommendationsController : ControllerBase
     {
         private readonly IRecommenderService _recommenderService;
@@ -18,14 +20,14 @@ namespace Friendly.WebAPI.Controllers
 
 
         [HttpGet("predict")]
-        public async Task<IActionResult> Predict(int userId, int hobbyId)
+        public async Task<IActionResult> Predict(int userId)
         {
-            
-            var recommended =  _recommenderService.GetRecommendedHobbiesForUser(userId);
 
-            //var hobbies =await _hobbyService.GetHobbiesByIds(recommended);
+            var recommended = _recommenderService.GetRecommendedHobbiesForUser(userId);
 
-            return Ok(recommended);
+            var hobbies = await _hobbyService.GetHobbiesByIds(recommended);
+
+            return Ok(hobbies);
         }
     }
 }

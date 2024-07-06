@@ -8,7 +8,6 @@ namespace Friendly.WebAPI.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-
     public class FeedbackController : BaseCRUDController<Model.Feedback, SearchFeedbackRequest, CreateFeedbackRequest, UpdateFeedbackRequest>
     {
         public FeedbackController(IFeedbackService service) : base(service)

@@ -48,7 +48,11 @@ namespace Friendly.Service
             {
                 var createdUser = await _userManager.FindByEmailAsync(user.Email);
                 var role = await _userManager.AddToRoleAsync(user, "User");
-             
+
+                if(request.isAdmin)
+                {
+                     await _userManager.AddToRoleAsync(user, "Admin");
+                }
 
                 _messageService.UserRegisterMessage("New user registered: " + user.FirstName +  " " + user.LastName);
 

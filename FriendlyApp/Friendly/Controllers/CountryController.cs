@@ -9,7 +9,6 @@ namespace Friendly.WebAPI.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-
     public class CountryController : BaseCRUDController<Model.Country, SearchCountryObject, CreateCountryRequest, UpdateCountryRequest>
     {
         private readonly ICountryService _countryService;

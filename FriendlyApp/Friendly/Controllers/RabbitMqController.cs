@@ -1,4 +1,5 @@
 ﻿using Friendly.Model.Requests.Report;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using publisher_api.Services;
 using System.ComponentModel;
@@ -7,6 +8,7 @@ using System.Text.Json;
 namespace Friendly.WebAPI.Controllers
 {
     [ApiController]
+    [Authorize]
     public class RabbitMqController :ControllerBase
     {
         private readonly IMessageService _msgService;

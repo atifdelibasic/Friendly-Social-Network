@@ -10,7 +10,6 @@ namespace Friendly.WebAPI.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-
     public class CommentController : BaseCRUDController<Comment, SearchCommentRequest, CreateCommentRequest, UpdateCommentRequest>
     {
         private readonly ICommentService _service;

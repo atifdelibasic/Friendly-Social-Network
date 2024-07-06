@@ -330,17 +330,28 @@ namespace Friendly.WebAPI
                         {
                             break;
                         }
+
+                        int random = gen.Next(1, 99);
+
+                        var kurac = await dbContext.UserHobbies.SingleOrDefaultAsync(x => x.UserId == user.Id && x.HobbyId == random);
+
+                        if(kurac != null)
+                        {
+                            i++;
+                            continue;
+                        }
+
                         UserHobby userHobby = new UserHobby
                         {
-                            HobbyId = hobby.Id,
+                            HobbyId = random,
                             UserId = user.Id
                         };
                         i++;
 
                         await dbContext.AddAsync(userHobby);
+                        await dbContext.SaveChangesAsync();
                     }
                 }
-                await dbContext.SaveChangesAsync();
             }
 
             if (!dbContext.Post.Any())
@@ -358,7 +369,7 @@ namespace Friendly.WebAPI
                 Random r = new Random();
                 foreach (var post in posts)
                 {
-                    if(post.UserId != 1 && (post.Id > 1 && post.Id < 25))
+                    if (post.UserId != 1 && (post.Id > 1 && post.Id < 25))
                     {
                         await dbContext.AddAsync(new Report
                         {
@@ -369,12 +380,12 @@ namespace Friendly.WebAPI
                         }
                              );
                     }
-                  
-                        
+
+
                     for (int i = 0; i < 5; i++)
                     {
                         int userId = r.Next(1, 10);
-                     
+
 
                         Like like = new Like
                         {

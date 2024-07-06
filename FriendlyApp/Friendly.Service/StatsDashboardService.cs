@@ -32,7 +32,7 @@ namespace Friendly.Service
             model.PostGrowthRate = await GetPostGrowthRate();
 
             model.AllTimeAppRating = await GetAllTimeAverageRating();
-            model.DeletedUsersCount = await _context.Users.Where(x => x.DeletedAt != null).CountAsync();
+            model.DeletedUsersCount = await _context.Users.IgnoreQueryFilters().Where(x => x.DeletedAt != null).CountAsync();
 
             return model;
         }

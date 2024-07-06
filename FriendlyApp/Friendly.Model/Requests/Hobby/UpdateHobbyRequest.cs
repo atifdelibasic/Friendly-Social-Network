@@ -8,8 +8,8 @@ namespace Friendly.Model.Requests.Hobby
         [StringLength(50)]
         public string Title { get; set; }
 
-        //[Required(AllowEmptyStrings = false)]
         [StringLength(50)]
         public string Description { get; set; }
+        public int HobbyCategoryId { get; set; }
     }
 }

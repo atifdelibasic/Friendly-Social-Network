@@ -25,13 +25,4 @@
     <ProjectReference Include="..\Friendly.Model\Friendly.Model.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Data\user-hobby-interactions-test.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\user-hobby-interactions-train.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

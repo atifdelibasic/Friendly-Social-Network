@@ -17,5 +17,6 @@ namespace Friendly.Model.Requests
         [Required(AllowEmptyStrings = false)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public bool isAdmin { get; set; }
     }
 }

@@ -33,6 +33,7 @@ namespace Friendly.Service
                 query = query.Where(x => x.Title.ToLower().Contains(searchTextLower) || x.Description.ToLower().Contains(searchTextLower));
             }
 
+            query = query.OrderByDescending(x => x.Id);
            
             return base.AddFilter(query, search);
         }

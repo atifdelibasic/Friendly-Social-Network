@@ -6,16 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Friendly.WebAPI.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    [Authorize]
-
+   
     public class CityResult<T>
     {
         public int Count { get; set; }
         public List<T> Result { get; set; }
     }
 
+    [ApiController]
+    [Route("[controller]")]
+    [Authorize]
     public class CityController : BaseCRUDController<Model.City, SearchCityRequest, CreateCityRequest, UpdateCityRequest>
     {
         private readonly ICityService _cityService;

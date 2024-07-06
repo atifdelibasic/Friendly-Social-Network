@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.ML;
+﻿using Microsoft.ML;
 using Microsoft.ML.Data;
-using System;
 using System.Data;
-using System.IO;
 using Microsoft.ML.Trainers;
+using Friendly.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace Friendly.Service
 {
@@ -17,21 +16,24 @@ namespace Friendly.Service
         List<int> GetRecommendedHobbiesForUser(int userId);
 
     }
+
     public class RecommenderService : IRecommenderService
     {
         private readonly MLContext _mlContext;
         private ITransformer _model;
+        private readonly FriendlyContext _context;
 
-        public RecommenderService()
+        public RecommenderService(FriendlyContext context)
         {
             _mlContext = new MLContext();
+            _context = context;
             TrainModel();
         }
 
 
         public void TrainModel()
         {
-            var (trainingData, _) = LoadData();
+            var trainingData = LoadData();
             _model = BuildAndTrainModel(_mlContext, trainingData);
         }
 
@@ -42,55 +44,40 @@ namespace Friendly.Service
 
         public bool Predict(int userId, int hobbyId)
         {
-            (IDataView training, IDataView test) = LoadData();
-            ITransformer model = BuildAndTrainModel(_mlContext, training);
-            EvaluateModel(_mlContext, test, model);
-            bool recommend = UseModelForSinglePrediction(_mlContext, model, userId, hobbyId);
-
+            bool recommend = UseModelForSinglePrediction(userId, hobbyId);
             return recommend;
         }
 
-        static bool UseModelForSinglePrediction(MLContext mlContext, ITransformer model, int userId, int hobbyId)
+        public bool UseModelForSinglePrediction(int userId, int hobbyId)
         {
             Console.WriteLine("=============== Making a prediction ===============");
-            var predictionEngine = mlContext.Model.CreatePredictionEngine<UserHobbyInteraction, UserHobbyInteractionPrediction>(model);
+            var predictionEngine = _mlContext.Model.CreatePredictionEngine<UserHobbyInteraction, UserHobbyInteractionPrediction>(_model);
             var testInput = new UserHobbyInteraction { UserId = userId, HobbyId = hobbyId };
 
             var userHobbyInteractionPrediction = predictionEngine.Predict(testInput);
 
-            if (Math.Round(userHobbyInteractionPrediction.Score, 1) > 0.3)
+            if (Math.Round(userHobbyInteractionPrediction.Score, 1) >= 50)
             {
                 Console.WriteLine("Hobby " + testInput.HobbyId + " in category is recommended for user " + testInput.UserId);
+                Console.WriteLine("label hoby id " + userHobbyInteractionPrediction.HobbyId);
+                Console.WriteLine("Score: " + Math.Round(userHobbyInteractionPrediction.Score, 1).ToString());
                 return true;
             }
             else
             {
                 Console.WriteLine("Hobby " + testInput.HobbyId + " in category is not recommended for user " + testInput.UserId);
             }
-            Console.WriteLine("Score: " + Math.Round(userHobbyInteractionPrediction.Score, 1).ToString());
 
             return false;
         }
 
-        static void EvaluateModel(MLContext mlContext, IDataView testDataView, ITransformer model)
+        private IDataView LoadData()
         {
-            Console.WriteLine("=============== Evaluating the model ===============");
-            var prediction = model.Transform(testDataView);
+            var predictionData = _context.UserHobbies.Select(uhi => new UserHobbyInteraction { HobbyId = uhi.HobbyId, CategoryId = uhi.Hobby.HobbyCategoryId, UserId = uhi.UserId }).Distinct().ToList();
+            Console.WriteLine(predictionData.Count);
+            var trainingDataView = _mlContext.Data.LoadFromEnumerable(predictionData);
 
-            var metrics = mlContext.Regression.Evaluate(prediction, labelColumnName: "Label", scoreColumnName: "Score");
-
-            Console.WriteLine("Root Mean Squared Error : " + metrics.RootMeanSquaredError.ToString());
-            Console.WriteLine("RSquared: " + metrics.RSquared.ToString());
-        }
-
-        private (IDataView training, IDataView test) LoadData()
-        {
-            var trainingDataPath = Path.Combine(AppContext.BaseDirectory, "Data", "user-hobby-interactions-train.csv");
-            var testDataPath = Path.Combine(AppContext.BaseDirectory, "Data", "user-hobby-interactions-test.csv");
-
-            var trainingDataView = _mlContext.Data.LoadFromTextFile<UserHobbyInteraction>(trainingDataPath, hasHeader: true, separatorChar: ',');
-            var testDataView = _mlContext.Data.LoadFromTextFile<UserHobbyInteraction>(testDataPath, hasHeader: true, separatorChar: ',');
-            return (trainingDataView, testDataView);
+            return trainingDataView;
         }
 
         public List<int> GetRecommendedHobbiesForUser(int userId)
@@ -99,18 +86,19 @@ namespace Friendly.Service
 
             if (_model == null)
             {
-                Console.WriteLine("Model is not trained yet. Please train the model first.");
+                Console.WriteLine("Model is not trained yet. Please train the model first. tala ga");
                 return recommendedHobbies;
             }
 
-            int minHobbyId = 1; 
-            int maxHobbyId = 20; 
+            var userHobbies = _context.UserHobbies.Where(x => x.UserId == userId).Select(x => x.HobbyId).ToList();
 
-            for (int hobbyId = minHobbyId; hobbyId <= maxHobbyId; hobbyId++)
+            var hobbies = _context.Hobby.Where(x => !userHobbies.Contains(x.Id)).ToList();
+
+            foreach (var hobby in hobbies)
             {
-                if (Predict(userId, hobbyId))
+                if (Predict(userId, hobby.Id))
                 {
-                    recommendedHobbies.Add(hobbyId);
+                    recommendedHobbies.Add(hobby.Id);
                 }
             }
 
@@ -128,9 +116,9 @@ namespace Friendly.Service
             {
                 MatrixColumnIndexColumnName = "userIdEncoded",
                 MatrixRowIndexColumnName = "hobbyIdEncoded",
-                LabelColumnName = "Label",
-                NumberOfIterations = 20,
-                ApproximationRank = 100
+                LabelColumnName = "HobbyId",
+                NumberOfIterations = 50,
+                ApproximationRank = 150
             };
 
             var trainerEstimator = estimator.Append(mlContext.Recommendation().Trainers.MatrixFactorization(options));
@@ -141,13 +129,6 @@ namespace Friendly.Service
             return model;
         }
 
-        private UserHobbyInteractionPrediction MakePrediction(int userId, int hobbyId)
-        {
-            var predictionEngine = _mlContext.Model.CreatePredictionEngine<UserHobbyInteraction, UserHobbyInteractionPrediction>(_model);
-            var testInput = new UserHobbyInteraction { UserId = userId, HobbyId = hobbyId };
-
-            return predictionEngine.Predict(testInput);
-        }
     }
 }
 
@@ -157,14 +138,13 @@ public class UserHobbyInteraction
     public float UserId;
     [LoadColumn(1)]
     public float HobbyId;
-    [LoadColumn(2)]
-    public float Label;
     [LoadColumn(3)]
     public int CategoryId;
 }
 
 public class UserHobbyInteractionPrediction
 {
-    public float Label;
+    public float HobbyId;
     public float Score;
 }
+

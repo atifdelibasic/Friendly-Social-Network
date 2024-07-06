@@ -59,6 +59,11 @@ services:
     build: 
       context: .
       dockerfile: ./ConsumerServiceApp/Dockerfile
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=myuser
+      - RABBITMQ_PASS=mypass
     links:
       - web_api
     depends_on:

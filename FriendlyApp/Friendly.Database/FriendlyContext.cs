@@ -19,6 +19,7 @@ namespace Friendly.Database
             modelBuilder.Entity<Report>().HasQueryFilter(report => report.Post.DeletedAt == null);
             modelBuilder.Entity<User>().HasQueryFilter(user => user.DeletedAt == null);
             modelBuilder.Entity<HobbyCategory>().HasQueryFilter(hobby => hobby.DeletedAt == null);
+            modelBuilder.Entity<Hobby>().HasQueryFilter(hobby => hobby.DeletedAt == null);
 
             base.OnModelCreating(modelBuilder);
         }
