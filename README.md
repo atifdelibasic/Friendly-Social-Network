@@ -23,5 +23,9 @@ Email: atif.delibasic@gmail.com
 Password: Lozinka123!
 ## This user has admin and user roles so you can access both admin panel and mobile app.
 
+Mobile: 
+Email: sophia.davis@example.com
+Password: Lozinka123!
+
 ## Hint: same goes for every user in database. Email is fname + lname + @example.com, and password is Lozinka123!
 
