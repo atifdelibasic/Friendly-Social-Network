@@ -20,7 +20,7 @@ namespace Friendly.Service
                 query = query.Where(x => x.Text.ToLower().Contains(searchTextLower));
             }
 
-            query = query.Include(x => x.User).Include(x => x.User);
+            query = query.Include(x => x.User).Include(x => x.User).IgnoreQueryFilters();
             query = query.OrderByDescending(x => x.DateCreated);
 
 

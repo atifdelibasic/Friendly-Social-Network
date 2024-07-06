@@ -51,12 +51,14 @@ namespace Friendly.Service
                                          x.ReportReason.Description.ToLower().Contains(searchTextLower));
             }
 
-            query = query.Include(x => x.User)
-                         .Include(x => x.ReportReason)
-                         .Include(x => x.Post)
-                         .Include(x => x.Comment)
-                         .Include(x => x.Post.User)
-                         .OrderByDescending(x => x.DateCreated);
+            query = query.Include(x => x.ReportReason)
+                   .Include(x => x.Post)
+                   .Include(x => x.Comment)
+                   .Include(x => x.User)
+                   .Include(x => x.Post.User)
+                   .Where(x => x.Post.User != null && x.Post.User.DeletedAt == null &&
+                               x.User != null && x.User.DeletedAt == null) // Ensure both users are not null and not deleted
+                   .OrderByDescending(x => x.DateCreated);
 
             return base.AddFilter(query, search);
         }

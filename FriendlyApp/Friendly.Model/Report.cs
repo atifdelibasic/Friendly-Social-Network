@@ -12,5 +12,6 @@ namespace Friendly.Model
         public virtual ReportReason ReportReason { get; set; }
         public DateTime DateCreated { get; set; }
         public bool Seen { get; set; }
+        public string? DeletedAt { get; set; }
     }
 }

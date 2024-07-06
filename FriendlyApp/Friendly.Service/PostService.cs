@@ -128,7 +128,7 @@ namespace Friendly.Service
                         Math.Cos((double)(Math.PI * point.lon / 180 - Math.PI * p.Longitude / 180)) +
                         Math.Sin((double)(Math.PI * p.Latitude / 180)) *
                         Math.Sin(Math.PI * point.lat / 180)
-                    ) <= 200)
+                    ) <= 300)
                 )
                 .Include(p => p.User)
                 .Include(p => p.Hobby)

@@ -19,6 +19,7 @@ namespace Friendly.Model.Requests.Post
         public int HobbyId { get; set; }
 
         [StringLength(maximumLength: 3000, ErrorMessage = "Description is too long")]
+        [Required(AllowEmptyStrings = false)]
         public string Description { get; set; }
 
         [DefaultValue(null)]

@@ -114,7 +114,7 @@ namespace Friendly.Service
                 {
                     UserId = user.Id,
                     Username = user.FirstName + " " + user.LastName,
-                    PostCount = _context.Post.Count(post => post.UserId == user.Id && post.DateCreated >= lastWeek)
+                    PostCount = _context.Post.Count(post => post.UserId == user.Id)
                 })
                 .Where(user => user.PostCount > 0) 
                 .OrderByDescending(user => user.PostCount)
