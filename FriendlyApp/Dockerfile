@@ -18,6 +18,7 @@ RUN dotnet restore "Friendly.WebAPI/Friendly.WebAPI.csproj"
 COPY . .
 WORKDIR "/src/Friendly"
 RUN dotnet build "Friendly.WebAPI.csproj" -c Release -o /app
+EXPOSE 5001
 
 FROM build AS publish
 RUN dotnet publish "Friendly.WebAPI.csproj" -c Release -o /app
