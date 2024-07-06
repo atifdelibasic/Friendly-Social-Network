@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Friendly.WebAPI.Controllers
 {
-    [Authorize("Admin")]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class StatsController : ControllerBase

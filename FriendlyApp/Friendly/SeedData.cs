@@ -168,7 +168,42 @@ namespace Friendly.WebAPI
                {
                    Name = "Banja Luka",
                    CountryId = 1,
-               }
+               },
+                new City
+                {
+                    Name = "Podgorica",
+                    CountryId = 4,
+                },
+                new City
+                {
+                    Name = "Nikšić",
+                    CountryId = 4,
+                },
+                 new City
+                 {
+                     Name = "Beograd",
+                     CountryId = 3,
+                 },
+                   new City
+                   {
+                       Name = "Priboj",
+                       CountryId = 3,
+                   },
+                    new City
+                    {
+                        Name = "Zagreb",
+                        CountryId = 2,
+                    },
+                     new City
+                     {
+                         Name = "Split",
+                         CountryId = 2,
+                     },
+                     new City
+                     {
+                         Name = "Dubrovnik",
+                         CountryId = 2,
+                     }
                );
             }
 
@@ -216,7 +251,6 @@ namespace Friendly.WebAPI
 
                 }
 
-
                 string[] firstNames = { "John", "Emily", "Michael", "Sophia", "William", "Isabella", "James", "Olivia", "Benjamin", "Emma" };
                 string[] lastNames = { "Smith", "Johnson", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson", "Thomas" };
 
@@ -231,7 +265,8 @@ namespace Friendly.WebAPI
                         Description = $"This is user {i + 1} description",
                         EmailConfirmed = true,
                         PhoneNumberConfirmed = true,
-                        BirthDate = DateTime.Now
+                        BirthDate = DateTime.Now,
+                        CityId = gen.Next(1,3)
                     };
 
                     var res = await userManager.CreateAsync(user, "Lozinka123!");
@@ -335,7 +370,7 @@ namespace Friendly.WebAPI
 
                         var kurac = await dbContext.UserHobbies.SingleOrDefaultAsync(x => x.UserId == user.Id && x.HobbyId == random);
 
-                        if(kurac != null)
+                        if (kurac != null)
                         {
                             i++;
                             continue;
@@ -431,8 +466,84 @@ namespace Friendly.WebAPI
                     await dbContext.AddAsync(friendship);
                 }
 
-                await dbContext.SaveChangesAsync();
+                Friendship f = new Friendship
+                {
+                    UserId = 9,
+                    FriendId = 1,
+                    Status = FriendshipStatus.Pending
+                };
 
+                await dbContext.AddAsync(f);
+
+                Friendship f1 = new Friendship
+                {
+                    UserId = 10,
+                    FriendId = 1,
+                    Status = FriendshipStatus.Pending
+                };
+
+                await dbContext.AddAsync(f1);
+
+                await dbContext.SaveChangesAsync();
+            }
+            List<string> questions = new List<string>
+                {
+                    "Hey, how are you doing today?",
+                    "Where did you go hiking?",
+                    "How was the view?",
+                    "Have you seen the latest movie?",
+                    "What did you think of the plot twists?",
+                    "Any other recommendations?",
+                    "Did you enjoy the new series on Netflix?"
+                };
+
+                        List<string> answers = new List<string>
+                {
+                    "I'm good, thanks! How about you?",
+                    "I went to Blue Ridge Mountains.",
+                    "The view was amazing!",
+                    "Not yet, but I've heard great things about it!",
+                    "They were mind-blowing.",
+                    "If you like thrillers, you should check out the new series on Netflix.",
+                    "Yes, I did! It was fantastic."
+                };
+
+
+             
+            if (!dbContext.Message.Any())
+            {
+                List<Message> messages = new List<Message>();
+
+                List<User> users = await dbContext.Users.ToListAsync();
+
+                foreach (var user in users)
+                {
+                    if(user.Id == 1)
+                    {
+                        continue;
+                    }
+
+                    for (int i = 0; i < answers.Count; i++)
+                    {
+                        var question = new Message
+                        {
+                            Content = questions[i],
+                            SenderId = user.Id,
+                            RecipientId = 1
+                        };
+
+                        var answer = new Message
+                        {
+                            Content = answers[i],
+                            SenderId = 1,
+                            RecipientId = user.Id
+                        };
+
+                        await dbContext.AddAsync(question);
+                        await dbContext.AddAsync(answer);
+                    }
+                }
+                await dbContext.SaveChangesAsync();
             }
 
 
