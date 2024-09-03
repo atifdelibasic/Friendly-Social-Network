@@ -112,7 +112,7 @@ namespace Friendly.WebAPI
             services.AddScoped<IReportReasonService, ReportReasonService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IStatsDashboardService, StatsDashboardService>();
-
+            services.AddScoped<IFITPassport, FITPassportService>();
 
         }
     }

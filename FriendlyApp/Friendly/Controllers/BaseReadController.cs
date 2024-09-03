@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Friendly.WebAPI.Controllers
 {
     [Route("[controller]")]
-    [Authorize]
+    //[Authorize]
     public class BaseReadController<T, TSearch> : ControllerBase where T : class where TSearch : BaseOffsetSearchObject
     {
         protected IReadService<T, TSearch> _service;

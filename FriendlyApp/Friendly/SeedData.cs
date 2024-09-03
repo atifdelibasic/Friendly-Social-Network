@@ -547,7 +547,20 @@ namespace Friendly.WebAPI
             }
 
 
-
+            if (!dbContext.FITPassport.Any())
+            {
+                for (int i = 1 ; i < 10; i++)
+                {
+                    var pass = new FITPassport
+                    {
+                        UserId = i,
+                        isActive = i % 2 == 0,
+                        ExpireDate = new DateTime(2025, 1, 1),
+                    };
+                    await dbContext.AddAsync(pass);
+                }
+                await dbContext.SaveChangesAsync();
+            }
         }
 
     }

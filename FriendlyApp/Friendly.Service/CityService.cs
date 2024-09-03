@@ -3,7 +3,6 @@ using Friendly.Database;
 using Friendly.Model.Requests.City;
 using Friendly.Model.SearchObjects;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Friendly.Service
 {

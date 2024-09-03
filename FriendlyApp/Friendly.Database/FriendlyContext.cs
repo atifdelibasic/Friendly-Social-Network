@@ -40,5 +40,6 @@ namespace Friendly.Database
         public DbSet<Notification> Notification { get; set; }
         public DbSet<Feedback> Feedback { get; set; }
         public DbSet<RateApp> RateApp { get; set; }
+        public DbSet<FITPassport> FITPassport { get; set; }
     }
 }
